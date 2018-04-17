@@ -1,50 +1,53 @@
 package queues;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Font;
-import java.awt.Image;
+import java.awt.*;
+import javax.swing.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
+/**
+ * 
+ * 
+ * TODO:
+ * Fix the JComboBox
+ * 
+ * 
+ * 
+ * @author Charles Mercenit
+ *
+ */
 
 public class SimulationView
 {
 	private final String myBackgroundImage = "images/background.jpg";
+	private final int MAX_PEOPLE_IN_LINE = 30;
 	
 	private JFrame myFrame = new JFrame("Queues");
 	private Font myFont = new Font("Font", Font.BOLD, 15);
+	private Font myParamFont = new Font("Param Font", Font.BOLD, 20);
 	private SimulationController myController;
 	private JButton myStartPause;
 	private Container myContentPane;
 	private JPanel mySimulationPanel;
 	private JTextArea myStats1;
 	private JTextArea myStats2;
-	private JTextArea myEditable1;
-	private JTextArea myEditable2;
-	private JTextArea myEditable3;
-	private JTextArea myEditable4;
-	private JTextField myHeading1;
-	private JTextField myHeading2;
-	private JTextField myHeading3;
-	private JTextField myHeading4;
-	private JTextField myHeading5;
-	private JTextField myHeading6;
+	private JTextField  myHeading1,
+						myHeading2,
+						myHeading3,
+						myHeading4, 
+						myHeading5,
+						myHeading6,
+						myGenerationTime,
+						myNumCustomers,
+						myServiceTime;
+	private JComboBox<Integer> myNumCashiers;
+	private JLabel[][] myCustomer;
+	private JLabel[] myCashier;
 	private JPanel myStatsPanel;
 	
 	public SimulationView(SimulationController controller)
 	{
 		myController = controller;
 		
-		myFrame.setSize(1000, 1000);
+		myFrame.setSize(1000, 900);
 		myFrame.setLocation(500, 100);
 		myFrame.setLayout(null);
 		myFrame.setResizable(false);
@@ -66,6 +69,12 @@ public class SimulationView
 		myStatsPanel.setSize(290, 1000);
 		myStatsPanel.setLocation(700, 0);
 		myStatsPanel.setBackground(new Color(225, 225, 225));
+		
+		myStartPause = new JButton("Start");
+		myStartPause.setLayout(null);
+		myStartPause.setSize(150, 25);
+		myStartPause.setLocation(70, 825);
+		myStatsPanel.add(myStartPause);
 
 		myStats1 = new JTextArea();
 		myStats1.setLayout(null);
@@ -109,15 +118,24 @@ public class SimulationView
 		myHeading2.setFont(myFont);
 		myStatsPanel.add(myHeading2);
 		
-		myHeading3 = new JTextField("Customer Generation Time: ");
+		myHeading3 = new JTextField("Generation Time: ");
 		myHeading3.setLayout(null);
-		myHeading3.setSize(150, 25);
+		myHeading3.setSize(200, 25);
 		myHeading3.setBackground(new Color(225, 225, 225));
 		myHeading3.setBorder(BorderFactory.createEmptyBorder());
 		myHeading3.setEditable(false);
 		myHeading3.setLocation(8, 675);
-		myHeading3.setFont(myFont);
+		myHeading3.setFont(myParamFont);
 		myStatsPanel.add(myHeading3);
+		
+		myGenerationTime = new JTextField();
+		myGenerationTime.setLayout(null);
+		myGenerationTime.setSize(75, 25);
+		myGenerationTime.setBackground(Color.WHITE);
+		myGenerationTime.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
+		myGenerationTime.setEditable(true);
+		myGenerationTime.setLocation(210, 675);
+		myStatsPanel.add(myGenerationTime);
 		
 		myHeading4 = new JTextField("# of Customers: ");
 		myHeading4.setLayout(null);
@@ -125,9 +143,18 @@ public class SimulationView
 		myHeading4.setBackground(new Color(225, 225, 225));
 		myHeading4.setBorder(BorderFactory.createEmptyBorder());
 		myHeading4.setEditable(false);
-		myHeading4.setLocation(8, 700);
-		myHeading4.setFont(myFont);
+		myHeading4.setLocation(8, 710);
+		myHeading4.setFont(myParamFont);
 		myStatsPanel.add(myHeading4);
+		
+		myNumCustomers = new JTextField();
+		myNumCustomers.setLayout(null);
+		myNumCustomers.setSize(75, 25);
+		myNumCustomers.setBackground(Color.WHITE);
+		myNumCustomers.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
+		myNumCustomers.setEditable(true);
+		myNumCustomers.setLocation(210, 710);
+		myStatsPanel.add(myNumCustomers);
 		
 		myHeading5 = new JTextField("# of Cashiers: ");
 		myHeading5.setLayout(null);
@@ -135,20 +162,72 @@ public class SimulationView
 		myHeading5.setBackground(new Color(225, 225, 225));
 		myHeading5.setBorder(BorderFactory.createEmptyBorder());
 		myHeading5.setEditable(false);
-		myHeading5.setLocation(8, 725);
-		myHeading5.setFont(myFont);
+		myHeading5.setLocation(8, 745);
+		myHeading5.setFont(myParamFont);
 		myStatsPanel.add(myHeading5);
 		
-		myHeading6 = new JTextField("Maximum Service Time: ");
+//FIX THIS		
+		Integer[] ints = new Integer[5];
+		ints[0] = 1;
+		ints[1] = 2;
+		ints[2] = 3;
+		ints[3] = 4;
+		ints[4] = 5;
+		myNumCashiers = new JComboBox<Integer>(ints);
+		myNumCashiers.setLayout(null);
+		myNumCashiers.setSize(75, 25);
+		myNumCashiers.setBackground(Color.WHITE);
+		myNumCashiers.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
+		myNumCashiers.setEditable(true);
+		myNumCashiers.setLocation(210, 745);
+		myStatsPanel.add(myNumCashiers);
+//FIX THIS		
+		
+		myHeading6 = new JTextField("Service Time: ");
 		myHeading6.setLayout(null);
-		myHeading6.setSize(150, 25);
+		myHeading6.setSize(175, 25);
 		myHeading6.setBackground(new Color(225, 225, 225));
 		myHeading6.setBorder(BorderFactory.createEmptyBorder());
 		myHeading6.setEditable(false);
-		myHeading6.setLocation(8, 750);
-		myHeading6.setFont(myFont);
+		myHeading6.setLocation(8, 780);
+		myHeading6.setFont(myParamFont);
 		myStatsPanel.add(myHeading6);
 		
+		myServiceTime = new JTextField();
+		myServiceTime.setLayout(null);
+		myServiceTime.setSize(75, 25);
+		myServiceTime.setBackground(Color.WHITE);
+		myServiceTime.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
+		myServiceTime.setEditable(true);
+		myServiceTime.setLocation(210, 780);
+		myStatsPanel.add(myServiceTime);
+		
+
+/*
+		myCashier = new JLabel[5];
+		for(int i = 0; i < myCashier.length; i++)
+		{
+//			myCashier[i] = new JLabel(new ImageIcon(CASHIER_CLOSED));
+//			myCashier[i].setSize(CASHIER_WIDTH, CASHIER_HEIGHT);
+//			myCashier[i].setLocation(100 + (CUSTOMER_WIDTH*i), 750);
+			myCashier[i].setVisible(true);
+			mySimulationPanel.add(myCashier[i]);
+		}
+		
+		myCustomer = new JLabel[5][MAX_PEOPLE_IN_LINE];
+		for(int i = 0; i < 5; i++)
+		{
+			for(int j = 0; j < MAX_PEOPLE_IN_LINE; j++)
+			{
+				myCustomer[i][j] = new JLabel();
+//				myCustomer[i][j].setSize(CUSTOMER_WIDTH, CUSTOMER_HEIGHT);
+//				myCustomer[i][j].setLocation(150 + (CUSTOMER_WIDTH*i), 500 - (50*j));
+				myCustomer[i][j].setVisible(true);
+				mySimulationPanel.add(myCustomer[i][j]);
+			}
+		}
+*/
+
 		
 		mySimulationPanel.add(myStatsPanel);
 		
@@ -158,7 +237,7 @@ public class SimulationView
 		
 		
 		
-		myStartPause = new JButton("Start");
+		
 		
 		this.associateListeners(myController);
 		
@@ -184,4 +263,17 @@ public class SimulationView
 	{
 		
 	}
+	
+	public void changeStartPause()
+	{
+		if(myStartPause.getText().equals("Start"))
+		{
+			myStartPause.setText("Pause");
+		}
+		else
+		{
+			myStartPause.setText("Start");
+		}
+	}
+	
 }
