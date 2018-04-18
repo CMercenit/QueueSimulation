@@ -1,5 +1,11 @@
 package queues;
 
+/**
+ * What do with myServiceTime
+ * 
+ * @author Charles Mercenit
+ *
+ */
 public class Customer
 {
 	private int myServiceTime;
@@ -21,5 +27,10 @@ public class Customer
 	public long getEntryTime()
 	{
 		return myEntryTime;
+	}
+	
+	public int getServiceTime()
+	{
+		return myServiceTime;
 	}
 }

@@ -1,20 +1,24 @@
 package queues;
 
-public class Cashier extends UniformCashier implements Runnable
+public abstract class Cashier implements Runnable
 {
-	public Cashier(int maxServiceTime, int serviceQueue)
+	private int myMaxServiceTime;
+	private int myNumServed;
+	private ServiceQueue myServiceQueue;
+	private Thread myThread;
+	
+	public abstract int generateServiceTime();
+	
+	public Cashier(int maxServiceTime, ServiceQueue serviceQueue)
 	{
-		super(maxServiceTime, serviceQueue);
-	}
-
-	public int generateServiceTime()
-	{
-		return 0;
+		myMaxServiceTime = maxServiceTime;
+		myServiceQueue = serviceQueue;
 	}
 	
 	public int serveCustomer()
 	{
-		return 0;
+		myNumServed++;
+		return myNumServed;
 	}
 
 	public void run()
@@ -26,4 +30,16 @@ public class Cashier extends UniformCashier implements Runnable
 	{
 		
 	}
+	
+	public ServiceQueue getServiceQueue()
+	{
+		return myServiceQueue;
+	}
+	
+	public int getMaxServiceTime()
+	{
+		return myMaxServiceTime;
+	}
+	
+	
 }

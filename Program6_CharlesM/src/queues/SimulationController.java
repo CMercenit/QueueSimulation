@@ -16,7 +16,6 @@ public class SimulationController implements Runnable
 		mySuspended = false;
 		
 //		this.start();
-//		this.startPause();
 	}
 	
 	public static void main(String args[])
@@ -27,6 +26,20 @@ public class SimulationController implements Runnable
 	public void run()
 	{
 		
+	}
+	
+	public void start()
+	{
+		try
+		{
+			myThread.start();
+		}
+		catch(IllegalThreadStateException e)
+		{
+			String error;
+			error = e.toString();
+			System.out.println(error);
+		}
 	}
 	
 	public void startPause()

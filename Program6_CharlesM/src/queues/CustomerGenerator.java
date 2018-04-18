@@ -22,18 +22,28 @@ package queues;
  */
 public abstract class CustomerGenerator implements Runnable
 {
-	public CustomerGenerator(int maxTimeBetweenCustomers, int maxNumCustomers, ServiceQueueManager serviceQueueManager)
+	private int myMaxTimeBetweenCustomers;
+	private ServiceQueueManager myServiceQueueManager;
+	private int myMaxNumCustomers;
+	private Thread myThread;
+	
+	public abstract int generateTimeBetweenCustomers();
+	
+	public CustomerGenerator(int maxTimeBetweenCustomers,
+							 int maxNumCustomers,
+							 ServiceQueueManager serviceQueueManager)
 	{
+		myMaxTimeBetweenCustomers = maxTimeBetweenCustomers;
+		myMaxNumCustomers = maxNumCustomers;
+		myServiceQueueManager = serviceQueueManager;
 		
 	}
-
-	public abstract int generateTimeBetweenCustomers();
 	
 	public Customer generateCustomer()
 	{
-		return null;
+		return new Customer();
 	}
-
+	
 	public void run()
 	{
 		
@@ -42,5 +52,20 @@ public abstract class CustomerGenerator implements Runnable
 	public void start()
 	{
 		
+	}
+	
+	public int getMaxNumCustomers()
+	{
+		return myMaxNumCustomers;
+	}
+	
+	public ServiceQueueManager getServiceQueueManager()
+	{
+		return myServiceQueueManager;
+	}
+	
+	public int getMaxTimeBetweenCustomers()
+	{
+		return myMaxTimeBetweenCustomers;
 	}
 }

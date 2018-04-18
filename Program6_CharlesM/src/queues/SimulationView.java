@@ -11,6 +11,7 @@ import javax.swing.*;
  * 
  * TODO:
  * Should I change the package for the regular stuff? For the view/controller?
+ * Is it okay to completely copy+paste ButtonListener class? Because I did.
  * 
  * 
  * 

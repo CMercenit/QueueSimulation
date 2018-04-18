@@ -2,14 +2,18 @@ package queues;
 
 import java.util.Random;
 
-public abstract class UniformCashier
+public class UniformCashier extends Cashier
 {
 	private Random myRandom;
 	
-	public UniformCashier(int maxServiceTime, int serviceQueue)
+	public UniformCashier(int maxServiceTime, ServiceQueue serviceQueue)
 	{
-		
+		super(maxServiceTime, serviceQueue);
 	}
-	
-	public abstract int generateServiceTime();
+
+	public int generateServiceTime()
+	{
+		myRandom = new Random();
+		return myRandom.nextInt(getMaxServiceTime());
+	}
 }
