@@ -2,14 +2,23 @@ package queues;
 
 import java.util.Random;
 
-public abstract class UniformCustomerGenerator
+public class UniformCustomerGenerator extends CustomerGenerator
 {
-	private Random myRandom;
+	private Random myRandom = new Random();
 	
-	public UniformCustomerGenerator(int maxTimeBetweenCustomers, ServiceQueueManager serviceQueueManager)
+	public UniformCustomerGenerator(int maxTimeBetweenCustomers, int maxNumCustomers, ServiceQueueManager serviceQueueManager)
 	{
-		
+		super(maxTimeBetweenCustomers, maxNumCustomers, serviceQueueManager);
+	}
+
+	public int generateTimeBetweenCustomers()
+	{
+		return 0;
 	}
 	
-	public abstract int generateTimeBetweenCustomers();
+	public Random getRandom()
+	{
+//		myRandom.ints(0, generateTimeBetweenCustomers());
+		return myRandom;
+	}
 }

@@ -28,4 +28,29 @@ public class SimulationController implements Runnable
 	{
 		
 	}
+	
+	public void startPause()
+	{
+		myView.changeStartPause();
+		myView.changeCashiers(myView.getComboBoxNumber());
+		if(mySuspended)
+		{
+			this.resume();
+		}
+		else
+		{
+			this.suspend();
+		}
+	}
+	
+	public synchronized void resume()
+	{
+		mySuspended = false;
+		this.notify();
+	}
+	
+	public void suspend()
+	{
+		mySuspended = true;
+	}
 }
