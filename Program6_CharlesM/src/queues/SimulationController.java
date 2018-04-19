@@ -1,9 +1,20 @@
 package queues;
 
+/**
+ * TODO:
+ * Learn how to use threading
+ * 
+ * 
+ * @author Charles
+ *
+ */
+
 public class SimulationController implements Runnable
 {
 	private SimulationModel myModel;
 	private SimulationView myView;
+	private CustomerGenerator myCustomerGenerator;
+	private ServiceQueueManager myServiceQueueManager;
 	private boolean mySuspended;
 	private Thread myThread;
 	
@@ -12,10 +23,11 @@ public class SimulationController implements Runnable
 	{
 		myModel = new SimulationModel();
 		myView = new SimulationView(this);
+		myServiceQueueManager = new ServiceQueueManager();
 		myThread = new Thread(this);
 		mySuspended = false;
 		
-//		this.start();
+		this.start();
 	}
 	
 	public static void main(String args[])
@@ -46,6 +58,12 @@ public class SimulationController implements Runnable
 	{
 		myView.changeStartPause();
 		myView.changeCashiers(myView.getComboBoxNumber());
+		
+//I don't know if this is correct
+		myCustomerGenerator = 
+				new UniformCustomerGenerator(myView.getGenerationTime(),
+											 myView.getNumCustomers(),
+											 myServiceQueueManager);
 		if(mySuspended)
 		{
 			this.resume();

@@ -412,4 +412,22 @@ public class SimulationView
 	{
 		return myNumCashiers.getSelectedIndex();
 	}
+	
+	public int getGenerationTime()
+	{
+		String text = myGenerationTime.getText();		
+		return Integer.parseInt(text);
+	}
+	
+	public int getNumCustomers()
+	{
+		String text = myNumCustomers.getText();
+		return Integer.parseInt(text);
+	}
+	
+	public int getServiceTime()
+	{
+		String text = myServiceTime.getText();
+		return Integer.parseInt(text);
+	}
 }

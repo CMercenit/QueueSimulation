@@ -36,22 +36,45 @@ public abstract class CustomerGenerator implements Runnable
 		myMaxTimeBetweenCustomers = maxTimeBetweenCustomers;
 		myMaxNumCustomers = maxNumCustomers;
 		myServiceQueueManager = serviceQueueManager;
-		
+		myThread = new Thread(this);
 	}
 	
 	public Customer generateCustomer()
 	{
+		System.out.println("customer generated");
 		return new Customer();
 	}
 	
 	public void run()
 	{
-		
+		try
+		{
+			for(int i = 0; i < myMaxNumCustomers; i++)
+			{
+				generateCustomer();
+				Thread.sleep(generateTimeBetweenCustomers());
+			}
+		}
+		catch(InterruptedException e)
+		{
+			String error;
+			error = e.toString();
+			System.out.println(error);
+		}
 	}
 	
 	public void start()
 	{
-		
+		try
+		{
+			myThread.start();
+		}
+		catch(IllegalThreadStateException e)
+		{
+			String error;
+			error = e.toString();
+			System.out.println(error);
+		}
 	}
 	
 	public int getMaxNumCustomers()
