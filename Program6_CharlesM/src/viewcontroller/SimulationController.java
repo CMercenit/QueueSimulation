@@ -1,4 +1,11 @@
-package queues;
+package viewcontroller;
+
+import queues.CustomerGenerator;
+import queues.ServiceQueue;
+import queues.ServiceQueueManager;
+import queues.SimulationModel;
+import queues.UniformCashier;
+import queues.UniformCustomerGenerator;
 
 /**
  * TODO:

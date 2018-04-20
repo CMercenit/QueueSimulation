@@ -1,10 +1,11 @@
-package queues;
+package viewcontroller;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.lang.reflect.Method;
 
 import javax.swing.*;
+
+import queues.ButtonListener;
 
 /**
  * 
