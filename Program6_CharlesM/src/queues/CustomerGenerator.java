@@ -25,6 +25,9 @@ public abstract class CustomerGenerator implements Runnable
 	private int myMaxTimeBetweenCustomers;
 	private ServiceQueueManager myServiceQueueManager;
 	private int myMaxNumCustomers;
+	private int customers;
+	private Customer myCustomer;
+	private boolean mySuspended;
 	private Thread myThread;
 	
 	public abstract int generateTimeBetweenCustomers();
@@ -36,23 +39,37 @@ public abstract class CustomerGenerator implements Runnable
 		myMaxTimeBetweenCustomers = maxTimeBetweenCustomers;
 		myMaxNumCustomers = maxNumCustomers;
 		myServiceQueueManager = serviceQueueManager;
+		customers = 0;
+		mySuspended = false;
 		myThread = new Thread(this);
 	}
 	
 	public Customer generateCustomer()
 	{
 		System.out.println("customer generated");
-		return new Customer();
+		myCustomer = new Customer();
+		return myCustomer;
 	}
 	
 	public void run()
 	{
+		//put in a loop that continues until max num customers is reached
+		//serviceQueueManager could be model instead of simulationModel
+		//each cashier needs suspend and resume like in controller, same with customer generator
+		//when suspend method happens (button is clicked), go to each class that needs to be suspended and get them to call their suspend method
+		//Cashier[] cashiers = myModel.getCashiers();
+		//for each cashier:
+		//	cashier.suspend()
+		//CustomerGenerator gen = myModel.getCustomerGenerator();
+		//gen.suspend();
+		//all this happens before mySuspended = true;
+		//in resume, do the opposite.
+		
 		try
 		{
-			for(int i = 0; i < myMaxNumCustomers; i++)
+			synchronized(this)
 			{
-				generateCustomer();
-				Thread.sleep(generateTimeBetweenCustomers());
+				this.generateCustomers();
 			}
 		}
 		catch(InterruptedException e)
@@ -61,6 +78,7 @@ public abstract class CustomerGenerator implements Runnable
 			error = e.toString();
 			System.out.println(error);
 		}
+		
 	}
 	
 	public void start()
@@ -77,6 +95,47 @@ public abstract class CustomerGenerator implements Runnable
 		}
 	}
 	
+	public synchronized void resume()
+	{
+		mySuspended = false;
+		this.notify();
+	}
+	
+	public void suspend()
+	{
+		mySuspended = true;
+	}
+	
+	private void waitWhileSuspended() throws InterruptedException
+	{
+		while(mySuspended)
+		{
+			this.wait();
+		}
+	}
+	
+	private void generateCustomers() throws InterruptedException
+	{
+		while(customers < myMaxNumCustomers)
+		{
+			this.waitWhileSuspended();
+			
+			try
+			{
+				generateCustomer();
+	//			System.out.println(myCustomer.toString());
+				customers++;
+				Thread.sleep(generateTimeBetweenCustomers());
+			}
+			catch(InterruptedException e)
+			{
+				String error;
+				error = e.toString();
+				System.out.println(error);
+			}
+		}
+	}
+	
 	public int getMaxNumCustomers()
 	{
 		return myMaxNumCustomers;
@@ -90,5 +149,10 @@ public abstract class CustomerGenerator implements Runnable
 	public int getMaxTimeBetweenCustomers()
 	{
 		return myMaxTimeBetweenCustomers;
+	}
+	
+	public void setSuspended(boolean b)
+	{
+		mySuspended = b;
 	}
 }

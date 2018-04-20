@@ -14,7 +14,9 @@ public class SimulationController implements Runnable
 	private SimulationModel myModel;
 	private SimulationView myView;
 	private CustomerGenerator myCustomerGenerator;
+	private UniformCashier myUniformCashier;
 	private ServiceQueueManager myServiceQueueManager;
+	private ServiceQueue myServiceQueue;
 	private boolean mySuspended;
 	private Thread myThread;
 	
@@ -24,10 +26,9 @@ public class SimulationController implements Runnable
 		myModel = new SimulationModel();
 		myView = new SimulationView(this);
 		myServiceQueueManager = new ServiceQueueManager();
+		myServiceQueue = new ServiceQueue();
 		myThread = new Thread(this);
-		mySuspended = false;
-		
-		this.start();
+		mySuspended = true;
 	}
 	
 	public static void main(String args[])
@@ -37,6 +38,19 @@ public class SimulationController implements Runnable
 	
 	public void run()
 	{
+		try
+		{
+			synchronized(this)
+			{
+				this.updateView();
+			}
+		}
+		catch(InterruptedException e)
+		{
+			String error;
+			error = e.toString();
+			System.out.println(error);
+		}
 		
 	}
 	
@@ -50,20 +64,75 @@ public class SimulationController implements Runnable
 		{
 			String error;
 			error = e.toString();
-			System.out.println(error);
+			System.out.println(error + " in SimulationController.");
 		}
+	}
+	
+	private void updateView() throws InterruptedException
+	{
+		int numQueues = myView.getComboBoxNumber();
+		
+		myCustomerGenerator = new UniformCustomerGenerator(myView.getGenerationTime(),
+														   myView.getNumCustomers(),
+														   myServiceQueueManager);
+		myUniformCashier = new UniformCashier(myView.getServiceTime(), myServiceQueue);
+		
+		this.startCustomerGenerator();
+		
+//while(myNumCustomers < myView.getNumCustomers())
+//if(myNumCustomers == myView.getNumCustomers())
+//	{
+//		myView.enable();	
+//	}
+		while(true)
+		{
+			this.waitWhileSuspended();
+			
+			try
+			{
+				System.out.println("working");
+				
+				Thread.sleep(1000);
+				for(int i = 0; i < numQueues; i++)
+				{
+					this.displayCustomers(i);
+				}
+			}
+			catch(InterruptedException e)
+			{
+				String error;
+				error = e.toString();
+				System.out.println(error);
+			}
+		}
+	}
+	
+	private void startCustomerGenerator()
+	{
+		myCustomerGenerator.start();
+	}
+	
+	private void waitWhileSuspended() throws InterruptedException
+	{
+		while(mySuspended)
+		{
+			this.wait();
+		}
+	}
+	
+	private void displayCustomers(int queue)
+	{
+		int numInQueue = myModel.getNumCustomers(queue);
+		myView.setCustomersInLine(queue, numInQueue);
 	}
 	
 	public void startPause()
 	{
+		this.start();
 		myView.changeStartPause();
 		myView.changeCashiers(myView.getComboBoxNumber());
+		myView.disable();
 		
-//I don't know if this is correct
-		myCustomerGenerator = 
-				new UniformCustomerGenerator(myView.getGenerationTime(),
-											 myView.getNumCustomers(),
-											 myServiceQueueManager);
 		if(mySuspended)
 		{
 			this.resume();
@@ -77,11 +146,15 @@ public class SimulationController implements Runnable
 	public synchronized void resume()
 	{
 		mySuspended = false;
+		myCustomerGenerator.setSuspended(false);
+		
 		this.notify();
+		myCustomerGenerator.notify();
 	}
 	
 	public void suspend()
 	{
 		mySuspended = true;
+		myCustomerGenerator.setSuspended(true);
 	}
 }

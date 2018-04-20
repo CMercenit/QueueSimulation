@@ -10,9 +10,12 @@ import javax.swing.*;
  * 
  * 
  * TODO:
- * Should I change the package for the regular stuff? For the view/controller?
- * Is it okay to completely copy+paste ButtonListener class? Because I did.
+ * Should I change the package for the regular stuff? For the view/controller? change view and controller package
+ * Is it okay to completely copy+paste ButtonListener class? Because I did. yes
+ * Where do I add the images for my customers to the customers that I create?
  * 
+ * try adding slider that increases or descreases simulation time
+ * 	
  * 
  * 
  * 
@@ -27,26 +30,28 @@ public class SimulationView
 	private final Image CASHIER_CLOSED = Toolkit.getDefaultToolkit().getImage("images/EmptyDesk(Transparent).png"); //145 x 70
 	private final ImageIcon SCALED_CASHIER_CLOSED = new ImageIcon(CASHIER_CLOSED.getScaledInstance(124, 60, Image.SCALE_SMOOTH));
 	private final Image CASHIER_OPEN = Toolkit.getDefaultToolkit().getImage("images/Cashier(Transparent).png"); //160 x 155
-	private final ImageIcon SCALED_CASHIER_OPEN = new ImageIcon(CASHIER_OPEN.getScaledInstance(137, 133, Image.SCALE_SMOOTH));
+	private final ImageIcon SCALED_CASHIER_OPEN = new ImageIcon(CASHIER_OPEN.getScaledInstance(127, 123, Image.SCALE_SMOOTH)); //137 x 133
 	private final Image REGULAR_PERSON = Toolkit.getDefaultToolkit().getImage("images/RegularMan(Transparent).png"); //55 x 155
-	private final ImageIcon SCALED_REGULAR_PERSON = new ImageIcon(REGULAR_PERSON.getScaledInstance(23, 66, Image.SCALE_SMOOTH));
+	private final ImageIcon SCALED_REGULAR_PERSON = new ImageIcon(REGULAR_PERSON.getScaledInstance(50, 100, Image.SCALE_SMOOTH)); //23 x 66
 	private final Image BOW_TIE_PERSON = Toolkit.getDefaultToolkit().getImage("images/BowTie(Transparent).png"); //50 x 157
-	private final ImageIcon SCALED_BOW_TIE_PERSON = new ImageIcon(BOW_TIE_PERSON.getScaledInstance(21, 67, Image.SCALE_SMOOTH));
+	private final ImageIcon SCALED_BOW_TIE_PERSON = new ImageIcon(BOW_TIE_PERSON.getScaledInstance(40, 95, Image.SCALE_SMOOTH)); //21 x 67
 	private final Image PONY_TAIL_PERSON = Toolkit.getDefaultToolkit().getImage("images/PonyTail(Transparent).png"); //105 x 160
-	private final ImageIcon SCALED_PONY_TAIL_PERSON = new ImageIcon(PONY_TAIL_PERSON.getScaledInstance(45, 69, Image.SCALE_SMOOTH));
+	private final ImageIcon SCALED_PONY_TAIL_PERSON = new ImageIcon(PONY_TAIL_PERSON.getScaledInstance(65, 108, Image.SCALE_SMOOTH)); //45 x 69
 	private final Image TOP_HAT_PERSON = Toolkit.getDefaultToolkit().getImage("images/TopHat(Transparent).png"); //55 x 185
-	private final ImageIcon SCALED_TOP_HAT_PERSON = new ImageIcon(TOP_HAT_PERSON.getScaledInstance(23, 79, Image.SCALE_SMOOTH));
+	private final ImageIcon SCALED_TOP_HAT_PERSON = new ImageIcon(TOP_HAT_PERSON.getScaledInstance(53, 128, Image.SCALE_SMOOTH)); //23 x 79
 	
-	private final int MAX_PEOPLE_IN_LINE = 30;
-	private final int MAX_NUM_TELLERS = 5;
+	private final int MAX_PEOPLE_IN_LINE = 11;
+	private final int MAX_NUM_CASHIERS = 5;
 	private final int OPEN_CASHIER_WIDTH = 160;
 	private final int OPEN_CASHIER_HEIGHT = 155;
 	private final int CLOSED_CASHIER_WIDTH = 145;
 	private final int CLOSED_CASHIER_HEIGHT = 70;
 	
+	private final Font myFont = new Font("Font", Font.BOLD, 15);
+	private final Font myParamFont = new Font("Param Font", Font.BOLD, 20);
+	private final Font myStatsFont = new Font("Stats Font", Font.BOLD, 15);
+	
 	private JFrame myFrame = new JFrame("Queues");
-	private Font myFont = new Font("Font", Font.BOLD, 15);
-	private Font myParamFont = new Font("Param Font", Font.BOLD, 20);
 	private SimulationController myController;
 	private JButton myStartPause;
 	private ButtonListener myStartPauseListener;
@@ -63,9 +68,11 @@ public class SimulationView
 						myGenerationTime,
 						myNumCustomers,
 						myServiceTime;
+	private JTextField[] myNumServed;
+	private JTextField[] myOverflow;
 	private JComboBox<Integer> myNumCashiers;
 	private JLabel[][] myCustomers;
-	private JLabel[] myCashiers = new JLabel[MAX_NUM_TELLERS];
+	private JLabel[] myCashiers = new JLabel[MAX_NUM_CASHIERS];
 	private JLabel  myRegularPerson,
 					myBowTiePerson,
 					myPonyTailPerson,
@@ -137,8 +144,7 @@ public class SimulationView
 //SCALED IMAGE
 		
 */
-		myCashiers = new JLabel[MAX_NUM_TELLERS];
-		for(int i = 0; i < MAX_NUM_TELLERS; i++)
+		for(int i = 0; i < MAX_NUM_CASHIERS; i++)
 		{
 			myCashiers[i] = new JLabel(SCALED_CASHIER_CLOSED);
 			myCashiers[i].setSize(124, 60);
@@ -146,6 +152,122 @@ public class SimulationView
 			myCashiers[i].setVisible(true);
 			mySimulationPanel.add(myCashiers[i]);
 		}
+		
+//		myCustomers = new JLabel[MAX_NUM_CASHIERS][MAX_PEOPLE_IN_LINE];
+//		for(int i = 0; i < MAX_NUM_CASHIERS; i++)
+//		{
+//			for(int j = 0; j < MAX_PEOPLE_IN_LINE; j++)
+//			{
+//				myCustomers[i][j] = new JLabel();
+//				myCustomers[i][j].setSize();
+//				myCustomers[i][j].setLocation(150 + (*i), 500 - (50*j));
+//				myCustomers[i][j].setVisible(true);
+//				mySimulationPanel.add(myCustomers[i][j]);
+//			}
+//		}
+		
+
+//TESTING PEOPLE IMAGES
+		JLabel test = new JLabel(SCALED_REGULAR_PERSON);
+		test.setSize(50, 100);
+		test.setLocation(40, 600);
+		test.setVisible(true);
+		mySimulationPanel.add(test);
+		
+		JLabel test2 = new JLabel(SCALED_BOW_TIE_PERSON);
+		test2.setSize(50, 100);
+		test2.setLocation(95, 600);
+		test2.setVisible(true);
+		mySimulationPanel.add(test2);
+		
+		JLabel test3 = new JLabel(SCALED_TOP_HAT_PERSON);
+		test3.setSize(50, 125);
+		test3.setLocation(150, 580);
+		test3.setVisible(true);
+		mySimulationPanel.add(test3);
+		
+		JLabel test4 = new JLabel(SCALED_PONY_TAIL_PERSON);
+		test4.setSize(75, 100);
+		test4.setLocation(195, 598);
+		test4.setVisible(true);
+		mySimulationPanel.add(test4);
+		
+		JLabel[] test5 = new JLabel[MAX_PEOPLE_IN_LINE];
+		boolean b = true;
+		for(int i = 0; i < MAX_PEOPLE_IN_LINE; i++)
+		{
+			test5[i] = new JLabel(SCALED_REGULAR_PERSON);
+			test5[i].setSize(50, 100);
+			test5[i].setVisible(true);
+			if(b)
+			{
+				test5[i].setLocation(614, 627 - (60*i));
+				b = !b;
+			}
+			else
+			{
+				test5[i].setLocation(596, 627 - (60*i));
+				b = !b;
+			}
+			mySimulationPanel.add(test5[i]);
+		}
+		
+		JLabel[] test6 = new JLabel[MAX_PEOPLE_IN_LINE];
+		boolean e = true;
+		ImageIcon[] people = new ImageIcon[4];
+		people[0] = SCALED_REGULAR_PERSON;
+		people[1] = SCALED_BOW_TIE_PERSON;
+		people[2] = SCALED_PONY_TAIL_PERSON;
+		people[3] = SCALED_TOP_HAT_PERSON;
+		for(int i = 0; i < MAX_PEOPLE_IN_LINE; i++)
+		{
+			int num = (int)(Math.random()*4);
+			test6[i] = new JLabel(people[num]);
+			if(test6[i].getIcon().equals(SCALED_REGULAR_PERSON))
+			{
+				test6[i].setSize(50, 100);
+			}
+			else if(test6[i].getIcon().equals(SCALED_TOP_HAT_PERSON))
+			{
+				test6[i].setSize(50, 125);
+			}
+			else if(test6[i].getIcon().equals(SCALED_PONY_TAIL_PERSON))
+			{
+				test6[i].setSize(75, 100);
+			}
+			else
+			{
+				test6[i].setSize(50, 100);
+			}
+			test6[i].setVisible(true);
+			if(e)
+			{
+				if(test6[i].getIcon().equals(SCALED_PONY_TAIL_PERSON))
+				{
+					test6[i].setLocation(472, 627 - (60*i));
+				}
+				else
+				{
+					test6[i].setLocation(474, 627 - (60*i)); //18 apart
+				}
+				e = !e;
+			}
+			else
+			{
+				if(test6[i].getIcon().equals(SCALED_PONY_TAIL_PERSON))
+				{
+					test6[i].setLocation(452, 627 - (60*i));
+				}
+				else
+				{
+					test6[i].setLocation(456, 627 - (60*i));
+				}
+				e = !e;
+			}
+			mySimulationPanel.add(test6[i]);
+		}
+//TESTING PEOPLE IMAGES		
+		
 		
 		myStatsPanel = new JPanel();
 		myStatsPanel.setLayout(null);
@@ -280,18 +402,33 @@ public class SimulationView
 		myServiceTime.setLocation(210, 780);
 		myStatsPanel.add(myServiceTime);
 		
-
-/*
-		myCashiers = new JLabel[MAX_NUM_TELLERS];
-		for(int i = 0; i < MAX_NUM_TELLERS; i++)
+		myNumServed = new JTextField[MAX_NUM_CASHIERS];
+		for(int i = 0; i < MAX_NUM_CASHIERS; i++)
 		{
-			myCashiers[i] = new JLabel(new ImageIcon(CASHIER_CLOSED));
-			myCashiers[i].setSize(CLOSED_CASHIER_WIDTH, CLOSED_CASHIER_HEIGHT);
-			myCashiers[i].setLocation(100 + (CLOSED_CASHIER_WIDTH*i), 150);
-			myCashiers[i].setVisible(true);
-			mySimulationPanel.add(myCashiers[i]);
+			myNumServed[i] = new JTextField("0");
+			myNumServed[i].setSize(50, 25);
+			myNumServed[i].setLocation(30 + (140*i), 835);
+			myNumServed[i].setVisible(true);
+			myNumServed[i].setEditable(false);
+			myNumServed[i].setBackground(Color.WHITE);
+			myNumServed[i].setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
+			myNumServed[i].setFont(myStatsFont);
+			mySimulationPanel.add(myNumServed[i]);
 		}
-*/
+		
+		myOverflow = new JTextField[MAX_NUM_CASHIERS];
+		for(int i = 0; i < MAX_NUM_CASHIERS; i++)
+		{
+			myOverflow[i] = new JTextField("+0");
+			myOverflow[i].setSize(50, 25);
+			myOverflow[i].setLocation(45 + (140*i), 5);
+			myOverflow[i].setVisible(true);
+			myOverflow[i].setEditable(false);
+			myOverflow[i].setBackground(Color.WHITE);
+			myOverflow[i].setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
+			myOverflow[i].setFont(myStatsFont);
+			mySimulationPanel.add(myOverflow[i]);
+		}
 		
 /*
 		myCustomers = new JLabel[MAX_NUM_TELLERS][MAX_PEOPLE_IN_LINE];
@@ -397,6 +534,8 @@ public class SimulationView
 				myCashiers[i].setSize(137, 133);
 				myCashiers[i].setLocation(-5 + (140*i), 706);
 				myCashiers[i].repaint();
+				myNumServed[i].setLocation(45 + (140*i), 835);
+				myNumServed[i].repaint();
 			}
 			else
 			{
@@ -404,6 +543,8 @@ public class SimulationView
 				myCashiers[4 - i].setSize(124, 60);
 				myCashiers[4 - i].setLocation(-5 + (140*(4 - i)), 775);
 				myCashiers[4 - i].repaint();
+				myNumServed[4 - i].setLocation(30 + (140*(4 - i)), 835);
+				myNumServed[4 - i].repaint();
 			}
 		}
 	}
@@ -429,5 +570,34 @@ public class SimulationView
 	{
 		String text = myServiceTime.getText();
 		return Integer.parseInt(text);
+	}
+	
+	public void setOverflowText(int text)
+	{
+		for(int i = 0; i < (getComboBoxNumber() + 1); i++)
+		{
+			myOverflow[i].setText("+" + text);
+		}
+	}
+	
+	public void setNumServedText(int text)
+	{
+		for(int i = 0; i < (getComboBoxNumber() + 1); i++)
+		{
+			myOverflow[i].setText("" + text);
+		}
+	}
+	
+	public void setCustomersInLine(int queue, int num)
+	{
+		
+	}
+	
+	public void disable()
+	{
+		myGenerationTime.setEnabled(false);
+		myServiceTime.setEnabled(false);
+		myNumCustomers.setEnabled(false);
+		myNumCashiers.setEnabled(false);
 	}
 }
