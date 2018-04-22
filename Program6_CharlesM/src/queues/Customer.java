@@ -1,6 +1,8 @@
 package queues;
 
+import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Toolkit;
 
 import javax.swing.ImageIcon;
@@ -10,6 +12,11 @@ import javax.swing.ImageIcon;
 	wait time is the time until a customer is served, set time being serviced. when the customer gets to the cashier, call that function that ends the wait
 	time, as soon as the cashier calls serves customer, should call customer.setTimeServed (the difference between when they started and served is wait time
 	dequeue customer in serve customer. serviceTime is how long a customer will take to be served, comes from UniformCashier.
+ * 
+ * 
+ * serveCustomer:
+ * dequeue, update customer's myWaitTime (myEntryTime - PresentTime), generate ServiceTime and give to customer, sleep ServiceTime, return service time
+ * 
  * 
  * @author Charles Mercenit
  *
@@ -30,11 +37,14 @@ public class Customer
 	private long myEntryTime;
 	private long myWaitTime;
 	private ImageIcon myImage;
+	private Dimension mySize;
+	private Point myLocation;
 	
 	public Customer()
 	{
 		myEntryTime = System.currentTimeMillis();
 		myImage = setCustomerImage();
+		mySize = getSize();
 	}
 	
 	public long getWaitTime()
@@ -82,7 +92,81 @@ public class Customer
 		images[3] = SCALED_TOP_HAT_PERSON;
 		
 		int random = (int)(Math.random()*4);
+		setSize(images[random]);
+	//	setLocation(images[random]);
 		
 		return images[random];
 	}
+	
+	public Dimension getSize()
+	{
+		return mySize;
+	}
+	
+	public void setSize(ImageIcon image)
+	{
+		if(image.equals(SCALED_PONY_TAIL_PERSON))
+		{
+			mySize = new Dimension(75, 100);
+		}
+		else if(image.equals(SCALED_BOW_TIE_PERSON) || image.equals(SCALED_REGULAR_PERSON))
+		{
+			mySize = new Dimension(50, 100);
+		}
+		else
+		{
+			mySize = new Dimension(50, 125);
+		}
+	//	mySize = new Dimension(image.getIconWidth(), image.getIconHeight());
+	}
+	
+	public Point getLocation()
+	{
+		return myLocation;
+	}
+	
+	public ImageIcon getIcon()
+	{
+		return myImage;
+	}
+	
+	/*
+	public void setLocation(ImageIcon image)
+	{
+		boolean e = true;
+		if(e)
+		{
+			if(image.equals(SCALED_PONY_TAIL_PERSON))
+			{
+				test6[i].setLocation(472, 627 - (60*i));
+			}
+			else
+			{
+				test6[i].setLocation(474, 627 - (60*i)); //18 apart
+			}
+			e = !e;
+		}
+		else
+		{
+			if(test6[i].getIcon().equals(SCALED_PONY_TAIL_PERSON))
+			{
+				test6[i].setLocation(452, 627 - (60*i));
+			}
+			else
+			{
+				test6[i].setLocation(456, 627 - (60*i));
+			}
+			e = !e;
+		}
+		
+		
+		
+		
+		
+		if(image.equals(SCALED_PONY_TAIL_PERSON))
+		{
+			
+		}
+	}
+	*/
 }

@@ -6,6 +6,7 @@ public abstract class Cashier implements Runnable
 	private int myNumServed;
 	private ServiceQueue myServiceQueue;
 	private Customer myCustomer = new Customer();
+	private boolean mySuspended;
 	private Thread myThread;
 	
 	public abstract int generateServiceTime();
@@ -42,7 +43,7 @@ public abstract class Cashier implements Runnable
 
 	public void run()
 	{
-		
+		System.out.println("cashiering");
 	}
 	
 	public void start()
@@ -67,6 +68,11 @@ public abstract class Cashier implements Runnable
 	public int getMaxServiceTime()
 	{
 		return myMaxServiceTime;
+	}
+	
+	public void setSuspended(boolean b)
+	{
+		mySuspended = b;
 	}
 	
 	

@@ -30,4 +30,9 @@ public class Queue
 	{
 		return myLinkedList.getLast();
 	}
+	
+	public int size()
+	{
+		return myLinkedList.size();
+	}
 }

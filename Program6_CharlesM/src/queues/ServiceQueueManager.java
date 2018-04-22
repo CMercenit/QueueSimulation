@@ -1,57 +1,199 @@
 package queues;
 
+import java.awt.Dimension;
+
 public class ServiceQueueManager
 {
-	public final int MY_MAX_NUMBER_QUEUES = 0;
+	public final int MAX_NUM_QUEUES = 5;
 	
-	private int myNumberOfServiceQueues;
+	private int myNumServiceQueues;
 	private int myTotalWaitTime;
 	private int myTotalServiceTime;
 	private int myTotalIdleTime;
 	private int myPresentTime;
-	private int myStartTime;
+	private long myStartTime;
 	private float myAverageWaitTime;
 	private float myAverageServiceTime;
 	private float myAverageIdleTime;
 	private ServiceQueue[] myServiceQueues;
+	private ServiceQueue myShortestQueue;
+	private UniformCustomerGenerator myCustomerGenerator;
+	private UniformCashier[] myCashiers;
+	private boolean mySuspended;
 	
-	public ServiceQueueManager()
+	public ServiceQueueManager(int numQueues, int maxTimeBetweenCustomers, int maxServiceTime, int maxNumCustomers)
 	{
+		myStartTime = System.currentTimeMillis();
+		myNumServiceQueues = numQueues;
+		myServiceQueues = new ServiceQueue[myNumServiceQueues];
+		myCashiers = new UniformCashier[numQueues];
 		
+		for(int i = 0; i < numQueues; i++)
+		{
+			myServiceQueues[i] = new ServiceQueue();
+//			myCashiers[i] = new UniformCashier(maxServiceTime, myServiceQueues[i]);
+//			myCashiers[i].start();
+		}
+		
+		myCustomerGenerator = new UniformCustomerGenerator(maxTimeBetweenCustomers, maxNumCustomers, this);
+		myCustomerGenerator.start();		
 	}
 	
-	public int totalServedSoFar()
+	public void suspend()
 	{
-		return 0;
+		myCustomerGenerator.setSuspended(mySuspended);
+		
+		for(int i = 0; i < myNumServiceQueues; i++)
+		{
+//			myCashiers[i].setSuspended(mySuspended);
+		}
 	}
 	
-	public int totalWaitTime()
+	public synchronized void resume()
 	{
-		return 0;
-	}
-	
-	public int totalServiceTime()
-	{
-		return 0;
+		myCustomerGenerator.setSuspended(mySuspended);
+		myCustomerGenerator.resume();
+		
+		for(int i = 0; i < myNumServiceQueues; i++)
+		{
+//			myCashiers[i].setSuspended(mySuspended);
+//			myCashiers[i].notify();
+		}
 	}
 	
 	public ServiceQueue determineShortestQueue()
 	{
-		return null;
+		
+		//customer generator needs to call servicequeuemanager to enqueue a customer when it is generated, servicequeuemanager
+		//needs to determine shortest queue and then enqueue the imported customer into it.
+		myShortestQueue = myServiceQueues[0];
+		for(int i = 0; i < myNumServiceQueues; i++)
+		{
+			if(myShortestQueue.size() > myServiceQueues[i].size())
+			{
+				myShortestQueue = myServiceQueues[i];
+			}
+		}
+		return myShortestQueue;
 	}
 	
-	public int averageWaitTime()
+	public int totalServedSoFar()
 	{
-		return 0;
+		int totalServed = 0;
+		
+		for(int i = 0; i < myNumServiceQueues; i++)
+		{
+			totalServed = totalServed + myServiceQueues[i].getNumCustomersServedSoFar();
+		}
+		
+		return totalServed;
 	}
 	
-	public int averageServiceTime()
+	public int totalWaitTime()
 	{
-		return 0;
+		myTotalWaitTime = 0;
+		
+		for(int i = 0; i < myNumServiceQueues; i++)
+		{
+			myTotalWaitTime = myTotalWaitTime + myServiceQueues[i].getTotalWaitTime();
+		}
+		return myTotalWaitTime;
 	}
 	
-	public int averageIdleTime()
+	public int totalServiceTime()
 	{
-		return 0;
+		myTotalServiceTime = 0;
+		
+		for(int i = 0; i < myNumServiceQueues; i++)
+		{
+			myTotalServiceTime = myTotalServiceTime + myServiceQueues[i].getTotalServiceTime();
+		}
+		return myTotalServiceTime;
+	}
+	
+	public int totalIdleTime()
+	{
+		myTotalIdleTime = 0;
+		
+		for(int i = 0; i < myNumServiceQueues; i++)
+		{
+			myTotalIdleTime = myTotalIdleTime + myServiceQueues[i].getTotalIdleTime();
+		}
+		return myTotalIdleTime;
+	}
+	
+	public float averageWaitTime()
+	{
+		myAverageWaitTime = 0;
+		
+		for(int i = 0; i < myNumServiceQueues; i++)
+		{
+			myAverageWaitTime = myAverageWaitTime + myServiceQueues[i].averageWaitTime();
+		}
+		return myAverageWaitTime / myNumServiceQueues;
+	}
+	
+	public float averageServiceTime()
+	{
+		myAverageServiceTime = 0;
+		
+		for(int i = 0; i < myNumServiceQueues; i++)
+		{
+			myAverageServiceTime = myAverageServiceTime + myServiceQueues[i].averageServiceTime();
+		}
+		return myAverageServiceTime / myNumServiceQueues;
+	}
+	
+	public float averageIdleTime()
+	{
+		myAverageIdleTime = 0;
+		
+		for(int i = 0; i < myNumServiceQueues; i++)
+		{
+			myAverageIdleTime = myAverageIdleTime + myServiceQueues[i].averageIdleTime();
+		}
+		return myAverageIdleTime / myNumServiceQueues;
+	}
+	
+	public long timePassed()
+	{
+		return myPresentTime - myStartTime;
+	}
+	
+	public void setSuspended(boolean b)
+	{
+		mySuspended = b;
+	}
+	
+	public ServiceQueue getServiceQueue(int num)
+	{
+		return myServiceQueues[num];
+	}
+	
+	public int getNumServiceQueues()
+	{
+		return myNumServiceQueues;
+	}
+	
+	public Dimension getCustomerSize()
+	{
+		return myCustomerGenerator.getCustomerSize();
+	}
+	
+	public Customer getCustomer()
+	{
+		return myCustomerGenerator.getCustomer();
+	}
+	
+	public void enqueue(Customer customer)
+	{
+		ServiceQueue queue = determineShortestQueue();
+		queue.enqueue(customer);
+	}
+	
+	public int getNumInQueue(int num)
+	{
+		ServiceQueue queue = myServiceQueues[num];
+		return queue.size();
 	}
 }

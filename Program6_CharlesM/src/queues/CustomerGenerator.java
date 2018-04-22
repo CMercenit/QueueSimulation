@@ -1,5 +1,6 @@
 package queues;
 
+import java.awt.Dimension;
 
 /**
  * TODO:
@@ -48,6 +49,7 @@ public abstract class CustomerGenerator implements Runnable
 	{
 		System.out.println("customer generated");
 		myCustomer = new Customer();
+		myServiceQueueManager.enqueue(myCustomer);
 		return myCustomer;
 	}
 	
@@ -154,5 +156,15 @@ public abstract class CustomerGenerator implements Runnable
 	public void setSuspended(boolean b)
 	{
 		mySuspended = b;
+	}
+	
+	public Customer getCustomer()
+	{
+		return myCustomer;
+	}
+	
+	public Dimension getCustomerSize()
+	{
+		return myCustomer.getSize();
 	}
 }

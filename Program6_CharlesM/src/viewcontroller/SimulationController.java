@@ -1,5 +1,8 @@
 package viewcontroller;
 
+import java.awt.Dimension;
+
+import queues.Customer;
 import queues.CustomerGenerator;
 import queues.ServiceQueue;
 import queues.ServiceQueueManager;
@@ -20,8 +23,6 @@ public class SimulationController implements Runnable
 {
 	private SimulationModel myModel;
 	private SimulationView myView;
-	private CustomerGenerator myCustomerGenerator;
-	private UniformCashier myUniformCashier;
 	private ServiceQueueManager myServiceQueueManager;
 	private ServiceQueue myServiceQueue;
 	private boolean mySuspended;
@@ -32,7 +33,6 @@ public class SimulationController implements Runnable
 	{
 		myModel = new SimulationModel();
 		myView = new SimulationView(this);
-		myServiceQueueManager = new ServiceQueueManager();
 		myServiceQueue = new ServiceQueue();
 		myThread = new Thread(this);
 		mySuspended = true;
@@ -77,14 +77,10 @@ public class SimulationController implements Runnable
 	
 	private void updateView() throws InterruptedException
 	{
-		int numQueues = myView.getComboBoxNumber();
-		
-		myCustomerGenerator = new UniformCustomerGenerator(myView.getGenerationTime(),
-														   myView.getNumCustomers(),
-														   myServiceQueueManager);
-		myUniformCashier = new UniformCashier(myView.getServiceTime(), myServiceQueue);
-		
-		this.startCustomerGenerator();
+		myServiceQueueManager = new ServiceQueueManager(myView.getComboBoxNumber(), 
+														myView.getGenerationTime(),
+														myView.getServiceTime(),
+														myView.getNumCustomers());
 		
 //while(myNumCustomers < myView.getNumCustomers())
 //if(myNumCustomers == myView.getNumCustomers())
@@ -97,10 +93,12 @@ public class SimulationController implements Runnable
 			
 			try
 			{
-				System.out.println("working");
+	//			System.out.println("working");
 				
-				Thread.sleep(1000);
-				for(int i = 0; i < numQueues; i++)
+				System.out.println("Thread in Controller going");
+				
+				Thread.sleep(100);
+				for(int i = 0; i < myView.getComboBoxNumber(); i++)
 				{
 					this.displayCustomers(i);
 				}
@@ -114,31 +112,28 @@ public class SimulationController implements Runnable
 		}
 	}
 	
-	private void startCustomerGenerator()
-	{
-		myCustomerGenerator.start();
-	}
-	
 	private void waitWhileSuspended() throws InterruptedException
 	{
 		while(mySuspended)
 		{
+			System.out.println("Thread in Controller paused.");
 			this.wait();
 		}
 	}
 	
 	private void displayCustomers(int queue)
 	{
-		int numInQueue = myModel.getNumCustomers(queue);
+		int numInQueue = myServiceQueueManager.getNumInQueue(queue);
 		myView.setCustomersInLine(queue, numInQueue);
 	}
 	
 	public void startPause()
 	{
+		System.out.println("Start button pushed");
 		this.start();
 		myView.changeStartPause();
-		myView.changeCashiers(myView.getComboBoxNumber());
-		myView.disable();
+		myView.changeCashiers(myView.getComboBoxNumber() - 1);
+//		myView.disable();
 		
 		if(mySuspended)
 		{
@@ -153,15 +148,44 @@ public class SimulationController implements Runnable
 	public synchronized void resume()
 	{
 		mySuspended = false;
-		myCustomerGenerator.setSuspended(false);
+//		myCustomerGenerator.setSuspended(false);
+		myServiceQueueManager.setSuspended(false);
 		
 		this.notify();
-		myCustomerGenerator.notify();
+//		myCustomerGenerator.notify();
+		myServiceQueueManager.resume();
 	}
 	
 	public void suspend()
 	{
 		mySuspended = true;
-		myCustomerGenerator.setSuspended(true);
+//		myCustomerGenerator.setSuspended(true);
+		myServiceQueueManager.setSuspended(true);
+		myServiceQueueManager.suspend();
+	}
+	
+	public void setCashierStatsText(Integer num)
+	{
+		if((num + 1) > myServiceQueueManager.getNumServiceQueues())
+		{
+			myView.setCashierStatsText("This cashier is inactive.");
+		}
+		else
+		{
+			String text = "Average Wait Time: " + myServiceQueueManager.getServiceQueue(num).averageWaitTime() + "\n";
+			text = text + "Average Idle Time: " + myServiceQueueManager.getServiceQueue(num).averageIdleTime() + "\n";
+			text = text + "Average Service Time: " + myServiceQueueManager.getServiceQueue(num).averageServiceTime() + "\n";
+			myView.setCashierStatsText(text);
+		}		
+	}
+	
+	public Dimension getCustomerSize()
+	{
+		return myServiceQueueManager.getCustomerSize();
+	}
+	
+	public Customer getCustomer()
+	{
+		return myServiceQueueManager.getCustomer();
 	}
 }
