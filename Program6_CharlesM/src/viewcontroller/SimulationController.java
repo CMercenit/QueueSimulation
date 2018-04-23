@@ -11,9 +11,6 @@ import queues.UniformCashier;
 import queues.UniformCustomerGenerator;
 
 /**
- * TODO:
- * Learn how to use threading
- * 
  * 
  * @author Charles
  *
@@ -21,7 +18,6 @@ import queues.UniformCustomerGenerator;
 
 public class SimulationController implements Runnable
 {
-	private SimulationModel myModel;
 	private SimulationView myView;
 	private ServiceQueueManager myServiceQueueManager;
 	private ServiceQueue myServiceQueue;
@@ -31,7 +27,6 @@ public class SimulationController implements Runnable
 	
 	public SimulationController()
 	{
-		myModel = new SimulationModel();
 		myView = new SimulationView(this);
 		myServiceQueue = new ServiceQueue();
 		myThread = new Thread(this);
@@ -93,10 +88,9 @@ public class SimulationController implements Runnable
 			
 			try
 			{
-	//			System.out.println("working");
 				
 				System.out.println("Thread in Controller going");
-				
+//Change this
 				Thread.sleep(100);
 				for(int i = 0; i < myView.getComboBoxNumber(); i++)
 				{
@@ -133,7 +127,9 @@ public class SimulationController implements Runnable
 		this.start();
 		myView.changeStartPause();
 		myView.changeCashiers(myView.getComboBoxNumber() - 1);
-//		myView.disable();
+//		myView.disable(); (disables text input fields so the simulation can't be broken)
+		
+//Once simulation is done, myView.enable();
 		
 		if(mySuspended)
 		{
@@ -148,18 +144,15 @@ public class SimulationController implements Runnable
 	public synchronized void resume()
 	{
 		mySuspended = false;
-//		myCustomerGenerator.setSuspended(false);
 		myServiceQueueManager.setSuspended(false);
 		
 		this.notify();
-//		myCustomerGenerator.notify();
 		myServiceQueueManager.resume();
 	}
 	
 	public void suspend()
 	{
 		mySuspended = true;
-//		myCustomerGenerator.setSuspended(true);
 		myServiceQueueManager.setSuspended(true);
 		myServiceQueueManager.suspend();
 	}

@@ -2,6 +2,7 @@ package viewcontroller;
 
 import java.awt.*;
 import java.lang.reflect.Method;
+import java.util.Hashtable;
 
 import javax.swing.*;
 
@@ -19,6 +20,13 @@ import queues.ButtonListener;
  * Add ManagerMom Customer type + image, change cashier image once they reach the front of the line
  * Add slider that slows down or speeds up simulation time
  * 	
+ * 
+ * PROBLEMS:
+ * Cashier throws an exception because it tries to dequeue an empty service queue
+ * myStarted in startPause (in controller) doesn't stop from throwing illegal thread state exception from starting thread after start button has been
+ * 	pushed once, instead forces all customers to be generated before program can be exited
+ * Customer images won't display, don't know if it's a problem with how fast my computer can display things or something else (might need to call updateView
+ * 	immediately after a customer is generated instead of waiting a fixed time)
  * 
  * 
  * 
@@ -84,19 +92,7 @@ public class SimulationView
 					myCashier,
 					myCashierClosed;
 	private JLabel myBackground;
-	
-	private int myPosition1 = 0;
-	private int myPosition2 = 0;
-	private int myPosition3 = 0;
-	private int myPosition4 = 0;
-	private int myPosition5 = 0;
-	
-	private boolean filled1 = false;
-	private boolean filled2 = false;
-	private boolean filled3 = false;
-	private boolean filled4 = false;
-	private boolean filled5 = false;
-	
+	private JSlider mySlider;	
 	private JPanel myStatsPanel;
 	
 	public SimulationView(SimulationController controller)
@@ -258,7 +254,8 @@ public class SimulationView
 		myStats1.setLineWrap(true);
 		myStats1.setBorder(BorderFactory.createLoweredBevelBorder());
 		myStats1.setBackground(Color.WHITE);
-		myStats1.setLocation(8, 50);
+//		myStats1.setLocation(8, 50);
+		myStats1.setLocation(8, 75);
 		myStats1.setEditable(false);
 		myStatsPanel.add(myStats1);
 		
@@ -268,17 +265,19 @@ public class SimulationView
 		myStats2.setLineWrap(true);
 		myStats2.setBorder(BorderFactory.createLoweredBevelBorder());
 		myStats2.setBackground(Color.WHITE);
-		myStats2.setLocation(8, 375);
+//		myStats2.setLocation(8, 375);
+		myStats2.setLocation(8, 390);
 		myStats2.setEditable(false);
 		myStatsPanel.add(myStats2);
 		
-		myHeading1 = new JTextField("Overall Stats: ");
+		myHeading1 = new JTextField("Customer Stats: ");
 		myHeading1.setLayout(null);
-		myHeading1.setSize(150, 25);
+		myHeading1.setSize(115, 25);
 		myHeading1.setBackground(new Color(225, 225, 225));
 		myHeading1.setBorder(BorderFactory.createEmptyBorder());
 		myHeading1.setEditable(false);
-		myHeading1.setLocation(8, 25);
+//		myHeading1.setLocation(8, 25);
+		myHeading1.setLocation(8, 50);
 		myHeading1.setFont(myFont);
 		myStatsPanel.add(myHeading1);
 		
@@ -288,7 +287,8 @@ public class SimulationView
 		myHeading2.setBackground(new Color(225, 225, 225));
 		myHeading2.setBorder(BorderFactory.createEmptyBorder());
 		myHeading2.setEditable(false);
-		myHeading2.setLocation(8, 350);
+//		myHeading2.setLocation(8, 350);
+		myHeading2.setLocation(8, 365);
 		myHeading2.setFont(myFont);
 		myStatsPanel.add(myHeading2);
 		
@@ -373,6 +373,22 @@ public class SimulationView
 		myServiceTime.setLocation(210, 780);
 		myStatsPanel.add(myServiceTime);
 		
+		mySlider = new JSlider(JSlider.HORIZONTAL, 0, 20, 10);
+		mySlider.setSize(290, 45);
+		Hashtable sliderTable = new Hashtable();
+		sliderTable.put(new Integer(0), new JLabel("0"));
+		sliderTable.put(new Integer(5), new JLabel("0.5"));
+		sliderTable.put(new Integer(10), new JLabel("1"));
+		sliderTable.put(new Integer(15), new JLabel("1.5"));
+		sliderTable.put(new Integer(20), new JLabel("2"));
+		mySlider.setLabelTable(sliderTable);
+		mySlider.setSnapToTicks(true);
+		mySlider.setMinorTickSpacing(5);
+		mySlider.setLocation(0, 0);
+		mySlider.setPaintTicks(true);
+		mySlider.setPaintLabels(true);
+		myStatsPanel.add(mySlider);
+		
 		myNumServed = new JTextField[MAX_NUM_CASHIERS];
 		for(int i = 0; i < MAX_NUM_CASHIERS; i++)
 		{
@@ -401,37 +417,10 @@ public class SimulationView
 			mySimulationPanel.add(myOverflow[i]);
 		}
 		
-/*
-		myCustomers = new JLabel[MAX_NUM_TELLERS][MAX_PEOPLE_IN_LINE];
-		for(int i = 0; i < MAX_NUM_TELLERS; i++)
-		{
-			for(int j = 0; j < MAX_PEOPLE_IN_LINE; j++)
-			{
-				myCustomers[i][j] = new JLabel();
-				myCustomers[i][j].setSize(CUSTOMER_WIDTH, CUSTOMER_HEIGHT);
-				myCustomers[i][j].setLocation(150 + (CUSTOMER_WIDTH*i), 500 - (50*j));
-				myCustomers[i][j].setVisible(true);
-				mySimulationPanel.add(myCustomers[i][j]);
-			}
-		}
-*/
-
-		
-		mySimulationPanel.add(myStatsPanel);
-		
-		myContentPane.add(mySimulationPanel, BorderLayout.CENTER);
-		
-		
-		
-		
-		
-		
+		mySimulationPanel.add(myStatsPanel);		
+		myContentPane.add(mySimulationPanel, BorderLayout.CENTER);		
 		
 		this.associateListeners(myController);
-		
-		
-		
-
 		
 		myBackground = new JLabel(new ImageIcon(myBackgroundImage));
 		myBackground.setSize(700, 1000);
@@ -498,7 +487,7 @@ public class SimulationView
 		}		
 	}
 	
-	public void setOverallStatsText(String text)
+	public void setCustomerStatsText(String text)
 	{
 		myStats1.setText(text);
 	}
@@ -602,86 +591,8 @@ public class SimulationView
 		}
 	*/	
 		
-		System.out.println("queue: " + queue);
-		System.out.println("num: " + num);
-		
-		
-		myBackground.add(new JLabel(SCALED_PONY_TAIL_PERSON));
-		
-	/*	
-		if(queue == 0 && !filled1)
-		{
-			System.out.println("myPosition1: " + myPosition1);
-			myCustomers[queue][myPosition1].setIcon(myController.getCustomer().getIcon());
-			myCustomers[queue][myPosition1].setSize(myController.getCustomerSize());
-			setCustomerLocation(queue, myPosition1);
-			myCustomers[queue][myPosition1].setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.MAGENTA));
-			myCustomers[queue][myPosition1].setVisible(true);
-			myBackground.add(myCustomers[queue][myPosition1]);
-			myPosition1++;
-			if(myPosition1 >= MAX_PEOPLE_IN_LINE)
-			{
-				filled1 = true;
-			}
-		}
-		else if(queue == 1 && !filled2)
-		{
-			myCustomers[queue][myPosition2].setIcon(myController.getCustomer().getIcon());
-			myCustomers[queue][myPosition2].setSize(myController.getCustomerSize());
-			setCustomerLocation(queue, myPosition2);
-			myCustomers[queue][myPosition2].setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.MAGENTA));
-			myCustomers[queue][myPosition2].setVisible(true);
-			myBackground.add(myCustomers[queue][myPosition2]);
-			myPosition2++;
-			if(myPosition2 >= MAX_PEOPLE_IN_LINE)
-			{
-				filled2 = true;
-			}
-		}
-		else if(queue == 2 && !filled3)
-		{
-			myCustomers[queue][myPosition3].setIcon(myController.getCustomer().getIcon());
-			myCustomers[queue][myPosition3].setSize(myController.getCustomerSize());
-			setCustomerLocation(queue, myPosition3);
-			myCustomers[queue][myPosition3].setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.MAGENTA));
-			myCustomers[queue][myPosition3].setVisible(true);
-			myBackground.add(myCustomers[queue][myPosition3]);
-			myPosition3++;
-			if(myPosition3 >= MAX_PEOPLE_IN_LINE)
-			{
-				filled3 = true;
-			}
-		}
-		else if(queue == 3 && !filled4)
-		{
-			myCustomers[queue][myPosition4].setIcon(myController.getCustomer().getIcon());
-			myCustomers[queue][myPosition4].setSize(myController.getCustomerSize());
-			setCustomerLocation(queue, myPosition4);
-			myCustomers[queue][myPosition4].setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.MAGENTA));
-			myCustomers[queue][myPosition4].setVisible(true);
-			myBackground.add(myCustomers[queue][myPosition4]);
-			myPosition4++;
-			if(myPosition4 >= MAX_PEOPLE_IN_LINE)
-			{
-				filled4 = true;
-			}
-		}
-		else if(queue == 4 && !filled5)
-		{
-			myCustomers[queue][myPosition5].setIcon(myController.getCustomer().getIcon());
-			myCustomers[queue][myPosition5].setSize(myController.getCustomerSize());
-			setCustomerLocation(queue, myPosition5);
-			myCustomers[queue][myPosition5].setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.MAGENTA));
-			myCustomers[queue][myPosition5].setVisible(true);
-			myBackground.add(myCustomers[queue][myPosition5]);
-			myPosition5++;
-			if(myPosition5 >= MAX_PEOPLE_IN_LINE)
-			{
-				filled5 = true;
-			}
-		}
-		
-		*/
+//		System.out.println("queue: " + queue);
+//		System.out.println("num: " + num);
 		
 		int customersLeft = num - MAX_PEOPLE_IN_LINE;
 		int counter = 0;
@@ -691,18 +602,6 @@ public class SimulationView
 			counter++;
 			customersLeft--;
 		}
-		
-		
-//		for(int i = 0; i < MAX_NUM_CASHIERS; i++)
-//		{
-//			for(int j = 0; j < MAX_PEOPLE_IN_LINE; j++)
-//			{
-//			//	myCustomers[i][j].setSize();
-//			//	myCustomers[i][j].setLocation(150 + (*i), 500 - (50*j));
-//				myCustomers[i][j].setVisible(true);
-//				mySimulationPanel.add(myCustomers[i][j]);
-//			}
-//		}
 	}
 	
 	public void setCustomerLocation(int queue, int num)

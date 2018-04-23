@@ -93,7 +93,6 @@ public class Customer
 		
 		int random = (int)(Math.random()*4);
 		setSize(images[random]);
-	//	setLocation(images[random]);
 		
 		return images[random];
 	}
@@ -117,7 +116,6 @@ public class Customer
 		{
 			mySize = new Dimension(50, 125);
 		}
-	//	mySize = new Dimension(image.getIconWidth(), image.getIconHeight());
 	}
 	
 	public Point getLocation()
@@ -129,44 +127,4 @@ public class Customer
 	{
 		return myImage;
 	}
-	
-	/*
-	public void setLocation(ImageIcon image)
-	{
-		boolean e = true;
-		if(e)
-		{
-			if(image.equals(SCALED_PONY_TAIL_PERSON))
-			{
-				test6[i].setLocation(472, 627 - (60*i));
-			}
-			else
-			{
-				test6[i].setLocation(474, 627 - (60*i)); //18 apart
-			}
-			e = !e;
-		}
-		else
-		{
-			if(test6[i].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-			{
-				test6[i].setLocation(452, 627 - (60*i));
-			}
-			else
-			{
-				test6[i].setLocation(456, 627 - (60*i));
-			}
-			e = !e;
-		}
-		
-		
-		
-		
-		
-		if(image.equals(SCALED_PONY_TAIL_PERSON))
-		{
-			
-		}
-	}
-	*/
 }

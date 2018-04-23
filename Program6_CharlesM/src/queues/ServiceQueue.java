@@ -13,6 +13,7 @@ public class ServiceQueue extends Queue
 	{
 		super();
 	//	myNumCustomersServedSoFar = 0;
+//CHANGE THIS< ONLY FOR TESTING
 		myNumCustomersServedSoFar = 5;
 		myNumCustomersInLine = 0;
 	}
@@ -93,5 +94,10 @@ public class ServiceQueue extends Queue
 	public int getTotalTime()
 	{
 		return myTotalTime;
+	}
+	
+	public Customer getCustomer()
+	{
+		return peek();
 	}
 }

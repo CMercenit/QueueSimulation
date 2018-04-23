@@ -4,8 +4,9 @@ public abstract class Cashier implements Runnable
 {
 	private int myMaxServiceTime;
 	private int myNumServed;
+	private long myServiceTime;
 	private ServiceQueue myServiceQueue;
-	private Customer myCustomer = new Customer();
+	private Customer myCustomer;
 	private boolean mySuspended;
 	private Thread myThread;
 	
@@ -15,22 +16,35 @@ public abstract class Cashier implements Runnable
 	{
 		myMaxServiceTime = maxServiceTime;
 		myServiceQueue = serviceQueue;
+		mySuspended = false;
+		myThread = new Thread(this);
 	}
 	
 	public int serveCustomer()
 	{
+		Customer served = myServiceQueue.serveCustomer();
 		long waitTime = myCustomer.getEntryTime() - System.currentTimeMillis();
 		myCustomer.setWaitTime(waitTime);
-		
-		long serviceTime = (long)generateServiceTime();
-		myCustomer.setServiceTime(serviceTime);
-		
+	
+		myServiceTime = (long)generateServiceTime();
+		myCustomer.setServiceTime(myServiceTime);
+	
 		myNumServed++;
-//		myServiceQueue.dequeue(myCustomer);
-		
+		System.out.println("Customer served");
+		myCustomer = myServiceQueue.getCustomer();
+	
+		return myNumServed;
+	}
+
+	public void run()
+	{
 		try
 		{
-			Thread.sleep(serviceTime);
+			synchronized(this)
+			{
+				System.out.println("Cashier running.");
+				this.serveCustomers();
+			}
 		}
 		catch(InterruptedException e)
 		{
@@ -38,18 +52,13 @@ public abstract class Cashier implements Runnable
 			error = e.toString();
 			System.out.println(error);
 		}
-		return myNumServed;
-	}
-
-	public void run()
-	{
-		System.out.println("cashiering");
 	}
 	
 	public void start()
 	{
 		try
 		{
+			System.out.println("Cashier started");
 			myThread.start();
 		}
 		catch(IllegalThreadStateException e)
@@ -75,5 +84,43 @@ public abstract class Cashier implements Runnable
 		mySuspended = b;
 	}
 	
+	public void serveCustomers() throws InterruptedException
+	{
+		while(true)
+		{
+			this.waitWhileSuspended();
+			
+			try
+			{
+				System.out.println("cashiering");
+				serveCustomer();
+				Thread.sleep(myServiceTime);
+			}
+			catch(InterruptedException e)
+			{
+				String error;
+				error = e.toString();
+				System.out.println(error);
+			}
+		}		
+	}
 	
+	public synchronized void resume()
+	{
+		mySuspended = false;
+		this.notify();
+	}
+	
+	public void suspend()
+	{
+		mySuspended = true;
+	}
+	
+	private void waitWhileSuspended() throws InterruptedException
+	{
+		while(mySuspended)
+		{
+			this.wait();
+		}
+	}
 }

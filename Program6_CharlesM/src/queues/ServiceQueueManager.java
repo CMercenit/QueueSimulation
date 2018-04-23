@@ -28,15 +28,17 @@ public class ServiceQueueManager
 		myServiceQueues = new ServiceQueue[myNumServiceQueues];
 		myCashiers = new UniformCashier[numQueues];
 		
+		myCustomerGenerator = new UniformCustomerGenerator(maxTimeBetweenCustomers, maxNumCustomers, this);
+		System.out.println("myCustomerGenerator started.");
+		myCustomerGenerator.start();
+		
 		for(int i = 0; i < numQueues; i++)
 		{
 			myServiceQueues[i] = new ServiceQueue();
-//			myCashiers[i] = new UniformCashier(maxServiceTime, myServiceQueues[i]);
-//			myCashiers[i].start();
+			myCashiers[i] = new UniformCashier(maxServiceTime, myServiceQueues[i]);
+			System.out.println("myCashiers[" + i + "] started.");
+			myCashiers[i].start();
 		}
-		
-		myCustomerGenerator = new UniformCustomerGenerator(maxTimeBetweenCustomers, maxNumCustomers, this);
-		myCustomerGenerator.start();		
 	}
 	
 	public void suspend()
@@ -45,27 +47,26 @@ public class ServiceQueueManager
 		
 		for(int i = 0; i < myNumServiceQueues; i++)
 		{
-//			myCashiers[i].setSuspended(mySuspended);
+			myCashiers[i].setSuspended(mySuspended);
 		}
 	}
 	
 	public synchronized void resume()
 	{
+		System.out.println("myCustomerGenerator resumed.");
 		myCustomerGenerator.setSuspended(mySuspended);
 		myCustomerGenerator.resume();
 		
 		for(int i = 0; i < myNumServiceQueues; i++)
 		{
-//			myCashiers[i].setSuspended(mySuspended);
-//			myCashiers[i].notify();
+			System.out.println("myCashiers[" + i + "] resumed.");
+			myCashiers[i].setSuspended(mySuspended);
+			myCashiers[i].resume();
 		}
 	}
 	
 	public ServiceQueue determineShortestQueue()
 	{
-		
-		//customer generator needs to call servicequeuemanager to enqueue a customer when it is generated, servicequeuemanager
-		//needs to determine shortest queue and then enqueue the imported customer into it.
 		myShortestQueue = myServiceQueues[0];
 		for(int i = 0; i < myNumServiceQueues; i++)
 		{
