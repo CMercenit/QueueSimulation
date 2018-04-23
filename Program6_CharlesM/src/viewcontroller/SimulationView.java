@@ -77,6 +77,7 @@ public class SimulationView
 						myHeading4, 
 						myHeading5,
 						myHeading6,
+						myHeading7,
 						myGenerationTime,
 						myNumCustomers,
 						myServiceTime;
@@ -245,7 +246,8 @@ public class SimulationView
 		myStartPause = new JButton("Start");
 		myStartPause.setLayout(null);
 		myStartPause.setSize(150, 25);
-		myStartPause.setLocation(70, 825);
+//		myStartPause.setLocation(70, 825);
+		myStartPause.setLocation(70, 835);
 		myStatsPanel.add(myStartPause);
 
 		myStats1 = new JTextArea();
@@ -255,7 +257,7 @@ public class SimulationView
 		myStats1.setBorder(BorderFactory.createLoweredBevelBorder());
 		myStats1.setBackground(Color.WHITE);
 //		myStats1.setLocation(8, 50);
-		myStats1.setLocation(8, 75);
+		myStats1.setLocation(8, 95);
 		myStats1.setEditable(false);
 		myStatsPanel.add(myStats1);
 		
@@ -266,7 +268,7 @@ public class SimulationView
 		myStats2.setBorder(BorderFactory.createLoweredBevelBorder());
 		myStats2.setBackground(Color.WHITE);
 //		myStats2.setLocation(8, 375);
-		myStats2.setLocation(8, 390);
+		myStats2.setLocation(8, 400);
 		myStats2.setEditable(false);
 		myStatsPanel.add(myStats2);
 		
@@ -277,7 +279,7 @@ public class SimulationView
 		myHeading1.setBorder(BorderFactory.createEmptyBorder());
 		myHeading1.setEditable(false);
 //		myHeading1.setLocation(8, 25);
-		myHeading1.setLocation(8, 50);
+		myHeading1.setLocation(8, 70);
 		myHeading1.setFont(myFont);
 		myStatsPanel.add(myHeading1);
 		
@@ -288,7 +290,7 @@ public class SimulationView
 		myHeading2.setBorder(BorderFactory.createEmptyBorder());
 		myHeading2.setEditable(false);
 //		myHeading2.setLocation(8, 350);
-		myHeading2.setLocation(8, 365);
+		myHeading2.setLocation(8, 375);
 		myHeading2.setFont(myFont);
 		myStatsPanel.add(myHeading2);
 		
@@ -298,7 +300,8 @@ public class SimulationView
 		myHeading3.setBackground(new Color(225, 225, 225));
 		myHeading3.setBorder(BorderFactory.createEmptyBorder());
 		myHeading3.setEditable(false);
-		myHeading3.setLocation(8, 675);
+//		myHeading3.setLocation(8, 675);
+		myHeading3.setLocation(8, 685);
 		myHeading3.setFont(myParamFont);
 		myStatsPanel.add(myHeading3);
 		
@@ -308,7 +311,8 @@ public class SimulationView
 		myGenerationTime.setBackground(Color.WHITE);
 		myGenerationTime.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
 		myGenerationTime.setEditable(true);
-		myGenerationTime.setLocation(210, 675);
+//		myGenerationTime.setLocation(210, 675);
+		myGenerationTime.setLocation(210, 685);
 		myStatsPanel.add(myGenerationTime);
 		
 		myHeading4 = new JTextField("# of Customers: ");
@@ -317,7 +321,8 @@ public class SimulationView
 		myHeading4.setBackground(new Color(225, 225, 225));
 		myHeading4.setBorder(BorderFactory.createEmptyBorder());
 		myHeading4.setEditable(false);
-		myHeading4.setLocation(8, 710);
+//		myHeading4.setLocation(8, 710);
+		myHeading4.setLocation(8, 720);
 		myHeading4.setFont(myParamFont);
 		myStatsPanel.add(myHeading4);
 		
@@ -327,7 +332,8 @@ public class SimulationView
 		myNumCustomers.setBackground(Color.WHITE);
 		myNumCustomers.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
 		myNumCustomers.setEditable(true);
-		myNumCustomers.setLocation(210, 710);
+//		myNumCustomers.setLocation(210, 710);
+		myNumCustomers.setLocation(210, 720);
 		myStatsPanel.add(myNumCustomers);
 		
 		myHeading5 = new JTextField("# of Cashiers: ");
@@ -336,7 +342,8 @@ public class SimulationView
 		myHeading5.setBackground(new Color(225, 225, 225));
 		myHeading5.setBorder(BorderFactory.createEmptyBorder());
 		myHeading5.setEditable(false);
-		myHeading5.setLocation(8, 745);
+//		myHeading5.setLocation(8, 745);
+		myHeading5.setLocation(8, 755);
 		myHeading5.setFont(myParamFont);
 		myStatsPanel.add(myHeading5);
 			
@@ -351,7 +358,8 @@ public class SimulationView
 		myNumCashiers.setBackground(Color.WHITE);
 		myNumCashiers.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
 		myNumCashiers.setEditable(false);
-		myNumCashiers.setLocation(210, 745);
+//		myNumCashiers.setLocation(210, 745);
+		myNumCashiers.setLocation(210, 755);
 		myStatsPanel.add(myNumCashiers);		
 		
 		myHeading6 = new JTextField("Service Time: ");
@@ -360,7 +368,8 @@ public class SimulationView
 		myHeading6.setBackground(new Color(225, 225, 225));
 		myHeading6.setBorder(BorderFactory.createEmptyBorder());
 		myHeading6.setEditable(false);
-		myHeading6.setLocation(8, 780);
+//		myHeading6.setLocation(8, 780);
+		myHeading6.setLocation(8, 790);
 		myHeading6.setFont(myParamFont);
 		myStatsPanel.add(myHeading6);
 		
@@ -370,7 +379,8 @@ public class SimulationView
 		myServiceTime.setBackground(Color.WHITE);
 		myServiceTime.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
 		myServiceTime.setEditable(true);
-		myServiceTime.setLocation(210, 780);
+//		myServiceTime.setLocation(210, 780);
+		myServiceTime.setLocation(210, 790);
 		myStatsPanel.add(myServiceTime);
 		
 		mySlider = new JSlider(JSlider.HORIZONTAL, 0, 20, 10);
@@ -384,10 +394,21 @@ public class SimulationView
 		mySlider.setLabelTable(sliderTable);
 		mySlider.setSnapToTicks(true);
 		mySlider.setMinorTickSpacing(5);
-		mySlider.setLocation(0, 0);
+		mySlider.setLocation(0, 25);
 		mySlider.setPaintTicks(true);
 		mySlider.setPaintLabels(true);
 		myStatsPanel.add(mySlider);
+		
+		myHeading7 = new JTextField("Speed:");
+		myHeading7.setLayout(null);
+		myHeading7.setSize(115, 25);
+		myHeading7.setBackground(new Color(225, 225, 225));
+		myHeading7.setBorder(BorderFactory.createEmptyBorder());
+		myHeading7.setEditable(false);
+		myHeading7.setLocation(8, 0);
+		myHeading7.setFont(myFont);
+		myStatsPanel.add(myHeading7);		
+		
 		
 		myNumServed = new JTextField[MAX_NUM_CASHIERS];
 		for(int i = 0; i < MAX_NUM_CASHIERS; i++)
