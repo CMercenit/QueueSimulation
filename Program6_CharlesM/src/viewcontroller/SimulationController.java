@@ -22,6 +22,7 @@ public class SimulationController implements Runnable
 	private ServiceQueueManager myServiceQueueManager;
 	private ServiceQueue myServiceQueue;
 	private boolean mySuspended;
+	private boolean myStarted;
 	private Thread myThread;
 	
 	
@@ -30,7 +31,8 @@ public class SimulationController implements Runnable
 		myView = new SimulationView(this);
 		myServiceQueue = new ServiceQueue();
 		myThread = new Thread(this);
-		mySuspended = true;
+		mySuspended = false;
+		myStarted = false;
 	}
 	
 	public static void main(String args[])
@@ -92,6 +94,7 @@ public class SimulationController implements Runnable
 				System.out.println("Thread in Controller going");
 //Change this
 				Thread.sleep(100);
+//Change this
 				for(int i = 0; i < myView.getComboBoxNumber(); i++)
 				{
 					this.displayCustomers(i);
@@ -124,21 +127,36 @@ public class SimulationController implements Runnable
 	public void startPause()
 	{
 		System.out.println("Start button pushed");
-		this.start();
-		myView.changeStartPause();
-		myView.changeCashiers(myView.getComboBoxNumber() - 1);
-//		myView.disable(); (disables text input fields so the simulation can't be broken)
-		
-//Once simulation is done, myView.enable();
-		
-		if(mySuspended)
+		if(myStarted)
 		{
-			this.resume();
+			myView.changeStartPause();
+			if(mySuspended)
+			{
+				this.resume();
+			}
+			else
+			{
+				this.suspend();
+			}
 		}
 		else
 		{
-			this.suspend();
+			this.start();
+			myView.changeStartPause();
+			myView.changeCashiers(myView.getComboBoxNumber() - 1);
+			myStarted = true;
+//			myView.disable(); (disables text input fields so the simulation can't be broken)		
+//			Once simulation is done, myView.enable();
 		}
+		
+//		if(mySuspended)
+//		{
+//			this.resume();
+//		}
+//		else
+//		{
+//			this.suspend();
+//		}
 	}
 	
 	public synchronized void resume()

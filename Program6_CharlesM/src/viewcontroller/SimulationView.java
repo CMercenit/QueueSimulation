@@ -18,13 +18,11 @@ import queues.ButtonListener;
  * Update cashier stats
  * (BONUS)
  * Add ManagerMom Customer type + image, change cashier image once they reach the front of the line
- * Add slider that slows down or speeds up simulation time
+ * Add slider that slows down or speeds up simulation time (slider added, doesn't do anything)
  * 	
  * 
  * PROBLEMS:
  * Cashier throws an exception because it tries to dequeue an empty service queue
- * myStarted in startPause (in controller) doesn't stop from throwing illegal thread state exception from starting thread after start button has been
- * 	pushed once, instead forces all customers to be generated before program can be exited
  * Customer images won't display, don't know if it's a problem with how fast my computer can display things or something else (might need to call updateView
  * 	immediately after a customer is generated instead of waiting a fixed time)
  * 
@@ -383,17 +381,21 @@ public class SimulationView
 		myServiceTime.setLocation(210, 790);
 		myStatsPanel.add(myServiceTime);
 		
-		mySlider = new JSlider(JSlider.HORIZONTAL, 0, 20, 10);
+		mySlider = new JSlider(JSlider.HORIZONTAL, 0, 200, 100);
 		mySlider.setSize(290, 45);
 		Hashtable sliderTable = new Hashtable();
 		sliderTable.put(new Integer(0), new JLabel("0"));
-		sliderTable.put(new Integer(5), new JLabel("0.5"));
-		sliderTable.put(new Integer(10), new JLabel("1"));
-		sliderTable.put(new Integer(15), new JLabel("1.5"));
-		sliderTable.put(new Integer(20), new JLabel("2"));
+		sliderTable.put(new Integer(25), new JLabel("0.25"));
+		sliderTable.put(new Integer(50), new JLabel("0.5"));
+		sliderTable.put(new Integer(75), new JLabel("0.75"));
+		sliderTable.put(new Integer(100), new JLabel("1"));
+		sliderTable.put(new Integer(125), new JLabel("1.25"));
+		sliderTable.put(new Integer(150), new JLabel("1.5"));
+		sliderTable.put(new Integer(175), new JLabel("1.75"));
+		sliderTable.put(new Integer(200), new JLabel("2"));
 		mySlider.setLabelTable(sliderTable);
 		mySlider.setSnapToTicks(true);
-		mySlider.setMinorTickSpacing(5);
+		mySlider.setMinorTickSpacing(25);
 		mySlider.setLocation(0, 25);
 		mySlider.setPaintTicks(true);
 		mySlider.setPaintLabels(true);
@@ -612,8 +614,8 @@ public class SimulationView
 		}
 	*/	
 		
-//		System.out.println("queue: " + queue);
-//		System.out.println("num: " + num);
+		System.out.println("queue: " + queue);
+		System.out.println("num: " + num);
 		
 		int customersLeft = num - MAX_PEOPLE_IN_LINE;
 		int counter = 0;

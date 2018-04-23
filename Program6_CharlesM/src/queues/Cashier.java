@@ -22,6 +22,7 @@ public abstract class Cashier implements Runnable
 	
 	public int serveCustomer()
 	{
+		System.out.println("Customer about to be served.");
 		Customer served = myServiceQueue.serveCustomer();
 		long waitTime = myCustomer.getEntryTime() - System.currentTimeMillis();
 		myCustomer.setWaitTime(waitTime);
@@ -32,6 +33,7 @@ public abstract class Cashier implements Runnable
 		myNumServed++;
 		System.out.println("Customer served");
 		myCustomer = myServiceQueue.getCustomer();
+		System.out.println(served.toString());
 	
 		return myNumServed;
 	}
@@ -92,7 +94,7 @@ public abstract class Cashier implements Runnable
 			
 			try
 			{
-				System.out.println("cashiering");
+				System.out.println("Thread in Cashier going.");
 				serveCustomer();
 				Thread.sleep(myServiceTime);
 			}

@@ -36,8 +36,8 @@ public class ServiceQueueManager
 		{
 			myServiceQueues[i] = new ServiceQueue();
 			myCashiers[i] = new UniformCashier(maxServiceTime, myServiceQueues[i]);
-			System.out.println("myCashiers[" + i + "] started.");
-			myCashiers[i].start();
+//			System.out.println("myCashiers[" + i + "] started.");
+//			myCashiers[i].start();
 		}
 	}
 	
@@ -45,10 +45,10 @@ public class ServiceQueueManager
 	{
 		myCustomerGenerator.setSuspended(mySuspended);
 		
-		for(int i = 0; i < myNumServiceQueues; i++)
-		{
-			myCashiers[i].setSuspended(mySuspended);
-		}
+//		for(int i = 0; i < myNumServiceQueues; i++)
+//		{
+//			myCashiers[i].setSuspended(mySuspended);
+//		}
 	}
 	
 	public synchronized void resume()
@@ -57,12 +57,12 @@ public class ServiceQueueManager
 		myCustomerGenerator.setSuspended(mySuspended);
 		myCustomerGenerator.resume();
 		
-		for(int i = 0; i < myNumServiceQueues; i++)
-		{
-			System.out.println("myCashiers[" + i + "] resumed.");
-			myCashiers[i].setSuspended(mySuspended);
-			myCashiers[i].resume();
-		}
+//		for(int i = 0; i < myNumServiceQueues; i++)
+//		{
+//			System.out.println("myCashiers[" + i + "] resumed.");
+//			myCashiers[i].setSuspended(mySuspended);
+//			myCashiers[i].resume();
+//		}
 	}
 	
 	public ServiceQueue determineShortestQueue()
