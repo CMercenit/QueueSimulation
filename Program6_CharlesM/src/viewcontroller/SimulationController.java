@@ -21,6 +21,8 @@ public class SimulationController implements Runnable
 	private SimulationView myView;
 	private ServiceQueueManager myServiceQueueManager;
 	private ServiceQueue myServiceQueue;
+	private int myQueue;
+	private int myCounter;
 	private boolean mySuspended;
 	private boolean myStarted;
 	private Thread myThread;
@@ -33,6 +35,8 @@ public class SimulationController implements Runnable
 		myThread = new Thread(this);
 		mySuspended = false;
 		myStarted = false;
+		myCounter = 0;
+		myQueue = 0;
 	}
 	
 	public static void main(String args[])
@@ -46,6 +50,11 @@ public class SimulationController implements Runnable
 		{
 			synchronized(this)
 			{
+				myServiceQueueManager = new ServiceQueueManager(myView.getComboBoxNumber(), 
+						myView.getGenerationTime(),
+						myView.getServiceTime(),
+						myView.getNumCustomers());
+				
 				this.updateView();
 			}
 		}
@@ -73,12 +82,7 @@ public class SimulationController implements Runnable
 	}
 	
 	private void updateView() throws InterruptedException
-	{
-		myServiceQueueManager = new ServiceQueueManager(myView.getComboBoxNumber(), 
-														myView.getGenerationTime(),
-														myView.getServiceTime(),
-														myView.getNumCustomers());
-		
+	{	
 //while(myNumCustomers < myView.getNumCustomers())
 //if(myNumCustomers == myView.getNumCustomers())
 //	{
@@ -91,14 +95,57 @@ public class SimulationController implements Runnable
 			try
 			{
 				
-				System.out.println("Thread in Controller going");
+		//		System.out.println("Thread in Controller going");
 //Change this
 				Thread.sleep(100);
 //Change this
-				for(int i = 0; i < myView.getComboBoxNumber(); i++)
+//				for(int i = 0; i < myView.getComboBoxNumber(); i++)
+//				{
+//					this.displayCustomers(i);
+//				}
+				
+				if(myQueue == 0)
 				{
-					this.displayCustomers(i);
+					if(myQueue < myView.getComboBoxNumber())
+					{
+						this.displayCustomers(myQueue);
+					}
+					myQueue = 1;
 				}
+				else if(myQueue == 1)
+				{
+					if(myQueue < myView.getComboBoxNumber())
+					{
+						this.displayCustomers(myQueue);
+					}
+					myQueue = 2;
+				}
+				else if(myQueue == 2)
+				{
+					if(myQueue < myView.getComboBoxNumber())
+					{
+						this.displayCustomers(myQueue);
+					}
+					myQueue = 3;
+				}
+				else if(myQueue == 3)
+				{
+					if(myQueue < myView.getComboBoxNumber())
+					{
+						this.displayCustomers(myQueue);
+					}
+					myQueue = 4;
+				}
+				else if(myQueue == 4)
+				{
+					if(myQueue < myView.getComboBoxNumber())
+					{
+						this.displayCustomers(myQueue);
+					}
+					myQueue = 0;
+				}
+				
+				
 			}
 			catch(InterruptedException e)
 			{
@@ -121,7 +168,7 @@ public class SimulationController implements Runnable
 	private void displayCustomers(int queue)
 	{
 		int numInQueue = myServiceQueueManager.getNumInQueue(queue);
-		myView.setCustomersInLine(queue, numInQueue);
+		myView.setCustomersInLine(queue, numInQueue, myServiceQueueManager.getCustomers(queue));
 	}
 	
 	public void startPause()
@@ -198,5 +245,10 @@ public class SimulationController implements Runnable
 	public Customer getCustomer()
 	{
 		return myServiceQueueManager.getCustomer();
+	}
+	
+	public int getQueueSize(int queue)
+	{
+		return myServiceQueueManager.getNumInQueue(queue);
 	}
 }

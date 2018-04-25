@@ -124,6 +124,7 @@ public abstract class CustomerGenerator implements Runnable
 				System.out.println(error);
 			}
 		}
+		//Once while loop is done, boolean isDone sent to Controller to tell it to enable the text fields
 	}
 	
 	public int getMaxNumCustomers()

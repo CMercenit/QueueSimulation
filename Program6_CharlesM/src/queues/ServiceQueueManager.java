@@ -1,6 +1,7 @@
 package queues;
 
 import java.awt.Dimension;
+import java.util.Vector;
 
 public class ServiceQueueManager
 {
@@ -196,5 +197,10 @@ public class ServiceQueueManager
 	{
 		ServiceQueue queue = myServiceQueues[num];
 		return queue.size();
+	}
+	
+	public Vector<Customer> getCustomers(int queue)
+	{
+		return myServiceQueues[queue].getCustomers();
 	}
 }

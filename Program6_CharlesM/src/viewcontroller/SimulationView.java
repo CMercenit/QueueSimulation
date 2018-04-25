@@ -3,16 +3,19 @@ package viewcontroller;
 import java.awt.*;
 import java.lang.reflect.Method;
 import java.util.Hashtable;
+import java.util.Vector;
 
 import javax.swing.*;
 
 import queues.ButtonListener;
+import queues.Customer;
 
 /**
  * 
  * 
  * TODO:
  * (NECESSARY)
+ * Color in Customer Images heads
  * Display unique customer images when they are generated (have to call update view immediately after a customer is generated instead of every 100 ms)
  * Dequeue customers using cashiers
  * Update cashier stats
@@ -23,8 +26,10 @@ import queues.ButtonListener;
  * 
  * PROBLEMS:
  * Cashier throws an exception because it tries to dequeue an empty service queue
- * Customer images won't display, don't know if it's a problem with how fast my computer can display things or something else (might need to call updateView
- * 	immediately after a customer is generated instead of waiting a fixed time)
+ * Customer images don't display properly, aren't in the correct position
+ * 	If I set generation time to 10 (less than update view's sleep), only every other customer or every three customers is shown. If I set generation time
+ * 	to 1000 (more than update view's sleep), all customers are shown but the images change frequently. If I set generation time to 100 (exactly update
+ * 	view's sleep), it almost works perfectly with a slight hiccup at the end.
  * 
  * 
  * 
@@ -581,12 +586,13 @@ public class SimulationView
 		return Integer.parseInt(text);
 	}
 	
-	public void setOverflowText(int text)
+	public void setOverflowText(int text, int queue)
 	{
-		for(int i = 0; i < getComboBoxNumber(); i++)
-		{
-			myOverflow[i].setText("+" + text);
-		}
+//		for(int i = 0; i < getComboBoxNumber(); i++)
+//		{
+//			myOverflow[i].setText("+" + text);
+//		}
+		myOverflow[queue].setText("+" + text);
 	}
 	
 	public void setNumServedText(int text)
@@ -597,31 +603,51 @@ public class SimulationView
 		}
 	}
 	
-	public void setCustomersInLine(int queue, int num)
+	public void setCustomersInLine(int queue, int num, Vector<Customer> customers)
 	{
-		//queue = line that i'm updating, num = amount of customers in that line
+//queue = line that i'm updating, num = amount of customers in that line, MAX_PEOPLE_IN_LINE = 11
+		
+
+//Doesn't place the customers properly using setCustomerLocation method
+//Need to call this method after generating customer instead of every 100 ms
+
+//		System.out.println("queue: " + queue);
+//		System.out.println("num: " + num);
 		
 		
-	/*	
-		for(int i = 0; i < MAX_PEOPLE_IN_LINE; i++)
+		
+		
+		int position;
+		if(num == 0)
 		{
-			myCustomers[queue][i].setIcon(myController.getCustomer().getIcon());
-			myCustomers[queue][i].setSize(myController.getCustomerSize());
-			setCustomerLocation(queue, i);
-			myCustomers[queue][i].setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.MAGENTA));
-			myCustomers[queue][i].setVisible(true);
-			myBackground.add(myCustomers[queue][i]);
+			position = num;
 		}
-	*/	
+		else if((num - MAX_PEOPLE_IN_LINE) < 0 || (num - MAX_PEOPLE_IN_LINE) == 0)
+		{
+			position = num - 1;
+		}
+		else
+		{
+			position = MAX_PEOPLE_IN_LINE - 1;
+		}
 		
-		System.out.println("queue: " + queue);
-		System.out.println("num: " + num);
+		if(myController.getQueueSize(queue) <= MAX_PEOPLE_IN_LINE)
+		{
+			myCustomers[queue][position].setIcon(myController.getCustomer().getIcon());
+			myCustomers[queue][position].setSize(myController.getCustomerSize());
+			setCustomerLocation(queue, position);
+			myCustomers[queue][position].setVisible(true);
+			myBackground.add(myCustomers[queue][position]);
+			myBackground.repaint();
+		}
+		
+		
 		
 		int customersLeft = num - MAX_PEOPLE_IN_LINE;
 		int counter = 0;
-		while(customersLeft > 0)
+		while(customersLeft > -1)
 		{
-			setOverflowText(counter);
+			setOverflowText(counter, queue);
 			counter++;
 			customersLeft--;
 		}
@@ -629,145 +655,218 @@ public class SimulationView
 	
 	public void setCustomerLocation(int queue, int num)
 	{
-			boolean b;
-			switch(queue)
+//		System.out.println("location queue: " + queue);
+//		System.out.println("location num: " + num);
+		
+//Tried to use a switch(queue) here but it broke it
+		
+		boolean b = true;
+		if(queue == 0)
+		{
+			if(b)
 			{
-				case 0:
-					b = true;
-					if(b)
-					{
-						if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-						{
-							myCustomers[queue][num].setLocation(52, 627 - (60*num));
-						}
-						else
-						{
-							myCustomers[queue][num].setLocation(54, 627 - (60*num));
-						}
-						b = !b;
-					}
-					else
-					{
-						if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-						{
-							myCustomers[queue][num].setLocation(32, 627 - (60*num));
-						}
-						else
-						{
-							myCustomers[queue][num].setLocation(36, 627 - (60*num));
-						}
-						b = !b;
-					}
-					break;
-				case 1:
-					b = true;
-					if(b)
-					{
-						if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-						{
-							myCustomers[queue][num].setLocation(192, 627 - (60*num));
-						}
-						else
-						{
-							myCustomers[queue][num].setLocation(194, 627 - (60*num));
-						}
-						b = !b;
-					}
-					else
-					{
-						if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-						{
-							myCustomers[queue][num].setLocation(172, 627 - (60*num));
-						}
-						else
-						{
-							myCustomers[queue][num].setLocation(176, 627 - (60*num));
-						}
-						b = !b;
-					}
-					break;
-				case 2:
-					b = true;
-					if(b)
-					{
-						if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-						{
-							myCustomers[queue][num].setLocation(332, 627 - (60*num));
-						}
-						else
-						{
-							myCustomers[queue][num].setLocation(334, 627 - (60*num));
-						}
-						b = !b;
-					}
-					else
-					{
-						if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-						{
-							myCustomers[queue][num].setLocation(312, 627 - (60*num));
-						}
-						else
-						{
-							myCustomers[queue][num].setLocation(316, 627 - (60*num));
-						}
-						b = !b;
-					}
-					break;
-				case 3:
-					b = true;
-					if(b)
-					{
-						if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-						{
-							myCustomers[queue][num].setLocation(472, 627 - (60*num));
-						}
-						else
-						{
-							myCustomers[queue][num].setLocation(474, 627 - (60*num));
-						}
-						b = !b;
-					}
-					else
-					{
-						if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-						{
-							myCustomers[queue][num].setLocation(452, 627 - (60*num));
-						}
-						else
-						{
-							myCustomers[queue][num].setLocation(456, 627 - (60*num));
-						}
-						b = !b;
-					}
-					break;
-				case 4:
-					b = true;
-					if(b)
-					{
-						if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-						{
-							myCustomers[queue][num].setLocation(612, 627 - (60*num));
-						}
-						else
-						{
-							myCustomers[queue][num].setLocation(614, 627 - (60*num));
-						}
-						b = !b;
-					}
-					else
-					{
-						if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-						{
-							myCustomers[queue][num].setLocation(592, 627 - (60*num));
-						}
-						else
-						{
-							myCustomers[queue][num].setLocation(596, 627 - (60*num));
-						}
-						b = !b;
-					}
-					break;
+				myCustomers[queue][num].setLocation(54, (627 - (60*num)));
+				b = !b;
 			}
+			else
+			{
+				myCustomers[queue][num].setLocation(36, (627 - (60*num)));
+				b = !b;
+			}
+		}
+		else if(queue == 1)
+		{
+			if(b)
+			{
+				myCustomers[queue][num].setLocation(194, (627 - (60*num)));
+				b = !b;
+			}
+			else
+			{
+				myCustomers[queue][num].setLocation(176, (627 - (60*num)));
+			}
+		}
+		else if(queue == 2)
+		{
+			if(b)
+			{
+				myCustomers[queue][num].setLocation(334, (627 - (60*num)));
+				b = !b;
+			}
+			else
+			{
+				myCustomers[queue][num].setLocation(316, (627 - (60*num)));
+			}
+		}
+		else if(queue == 3)
+		{
+			if(b)
+			{
+				myCustomers[queue][num].setLocation(474, (627 - (60*num)));
+				b = !b;
+			}
+			else
+			{
+				myCustomers[queue][num].setLocation(456, (627 - (60*num)));
+			}
+		}
+		else if(queue == 4)
+		{
+			if(b)
+			{
+				myCustomers[queue][num].setLocation(614, (627 - (60*num)));
+				b = !b;
+			}
+			else
+			{
+				myCustomers[queue][num].setLocation(596, (627 - (60*num)));
+			}
+		}
+		
+		
+		
+		
+		
+		
+//			boolean b;
+//			switch(queue)
+//			{
+//				case 0:
+//					b = true;
+//					if(b)
+//					{
+//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
+//	//					{
+//	//						myCustomers[queue][num].setLocation(52, 627 - (60*num));
+//	//					}
+//	//					else
+//	//					{
+//							myCustomers[queue][num].setLocation(54, 627 - (60*num));
+//	//					}
+//						b = !b;
+//					}
+//					else
+//					{
+//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
+//	//					{
+//	//						myCustomers[queue][num].setLocation(32, 627 - (60*num));
+//	//					}
+//	//					else
+//	//					{
+//							myCustomers[queue][num].setLocation(36, 627 - (60*num));
+//	//					}
+//						b = !b;
+//					}
+//					break;
+//				case 1:
+//					b = true;
+//					if(b)
+//					{
+//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
+//	//					{
+//	//						myCustomers[queue][num].setLocation(192, 627 - (60*num));
+//	//					}
+//	//					else
+//	//					{
+//							myCustomers[queue][num].setLocation(194, 627 - (60*num));
+//	//					}
+//						b = !b;
+//					}
+//					else
+//					{
+//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
+//	//					{
+//	//						myCustomers[queue][num].setLocation(172, 627 - (60*num));
+//	//					}
+//	//					else
+//	//					{
+//							myCustomers[queue][num].setLocation(176, 627 - (60*num));
+//	//					}
+//						b = !b;
+//					}
+//					break;
+//				case 2:
+//					b = true;
+//					if(b)
+//					{
+//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
+//	//					{
+//	//						myCustomers[queue][num].setLocation(332, 627 - (60*num));
+//	//					}
+//	//					else
+//	//					{
+//							myCustomers[queue][num].setLocation(334, 627 - (60*num));
+//	//					}
+//						b = !b;
+//					}
+//					else
+//					{
+//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
+//	//					{
+//	//						myCustomers[queue][num].setLocation(312, 627 - (60*num));
+//	//					}
+//	//					else
+//	//					{
+//							myCustomers[queue][num].setLocation(316, 627 - (60*num));
+//	//					}
+//						b = !b;
+//					}
+//					break;
+//				case 3:
+//					b = true;
+//					if(b)
+//					{
+//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
+//	//					{
+//	//						myCustomers[queue][num].setLocation(472, 627 - (60*num));
+//	//					}
+//	//					else
+//	//					{
+//							myCustomers[queue][num].setLocation(474, 627 - (60*num));
+//	//					}
+//						b = !b;
+//					}
+//					else
+//					{
+//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
+//	//					{
+//	//						myCustomers[queue][num].setLocation(452, 627 - (60*num));
+//	//					}
+//	//					else
+//	//					{
+//							myCustomers[queue][num].setLocation(456, 627 - (60*num));
+//	//					}
+//						b = !b;
+//					}
+//					break;
+//				case 4:
+//					b = true;
+//					if(b)
+//					{
+//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
+//	//					{
+//	//						myCustomers[queue][num].setLocation(612, 627 - (60*num));
+//	//					}
+//	//					else
+//	//					{
+//							myCustomers[queue][num].setLocation(614, 627 - (60*num));
+//	//					}
+//						b = !b;
+//					}
+//					else
+//					{
+//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
+//	//					{
+//	//						myCustomers[queue][num].setLocation(592, 627 - (60*num));
+//	//					}
+//	//					else
+//	//					{
+//							myCustomers[queue][num].setLocation(596, 627 - (60*num));
+//	//					}
+//						b = !b;
+//					}
+//					break;
+//			}
 	}
 	
 	public void disable()
