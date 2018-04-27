@@ -9,11 +9,13 @@ import javax.swing.*;
 
 import queues.ButtonListener;
 import queues.Customer;
+import queues.ServiceQueue;
 
 /**
  * 
  * 
  * TODO:
+ * Should I make individual methods for each thing in the view?
  * (NECESSARY)
  * Color in Customer Images heads
  * Display unique customer images when they are generated (have to call update view immediately after a customer is generated instead of every 100 ms)
@@ -29,7 +31,7 @@ import queues.Customer;
  * Customer images don't display properly, aren't in the correct position
  * 	If I set generation time to 10 (less than update view's sleep), only every other customer or every three customers is shown. If I set generation time
  * 	to 1000 (more than update view's sleep), all customers are shown but the images change frequently. If I set generation time to 100 (exactly update
- * 	view's sleep), it almost works perfectly with a slight hiccup at the end.
+ * 	view's sleep), it almost works perfectly with a slight hiccough at the end.
  * 
  * 
  * 
@@ -56,10 +58,6 @@ public class SimulationView
 	
 	private final int MAX_PEOPLE_IN_LINE = 11;
 	private final int MAX_NUM_CASHIERS = 5;
-	private final int OPEN_CASHIER_WIDTH = 160;
-	private final int OPEN_CASHIER_HEIGHT = 155;
-	private final int CLOSED_CASHIER_WIDTH = 145;
-	private final int CLOSED_CASHIER_HEIGHT = 70;
 	
 	private final Font myFont = new Font("Font", Font.BOLD, 15);
 	private final Font myParamFont = new Font("Param Font", Font.BOLD, 20);
@@ -388,7 +386,7 @@ public class SimulationView
 		
 		mySlider = new JSlider(JSlider.HORIZONTAL, 0, 200, 100);
 		mySlider.setSize(290, 45);
-		Hashtable sliderTable = new Hashtable();
+		Hashtable<Integer, JLabel> sliderTable = new Hashtable<Integer, JLabel>();
 		sliderTable.put(new Integer(0), new JLabel("0"));
 		sliderTable.put(new Integer(25), new JLabel("0.25"));
 		sliderTable.put(new Integer(50), new JLabel("0.5"));
@@ -595,15 +593,12 @@ public class SimulationView
 		myOverflow[queue].setText("+" + text);
 	}
 	
-	public void setNumServedText(int text)
+	public void setNumServedText(int text, int queue)
 	{
-		for(int i = 0; i < getComboBoxNumber(); i++)
-		{
-			myOverflow[i].setText("" + text);
-		}
+		myNumServed[queue].setText("" + text);
 	}
 	
-	public void setCustomersInLine(int queue, int num, Vector<Customer> customers)
+	public void setCustomersInLine(int queue, int num, ServiceQueue customers)
 	{
 //queue = line that i'm updating, num = amount of customers in that line, MAX_PEOPLE_IN_LINE = 11
 		
@@ -613,9 +608,6 @@ public class SimulationView
 
 //		System.out.println("queue: " + queue);
 //		System.out.println("num: " + num);
-		
-		
-		
 		
 		int position;
 		if(num == 0)
@@ -631,15 +623,34 @@ public class SimulationView
 			position = MAX_PEOPLE_IN_LINE - 1;
 		}
 		
-		if(myController.getQueueSize(queue) <= MAX_PEOPLE_IN_LINE)
+//		for(int i = 0; i < customers.size(); i++)
+//		{
+//			myBackground.removeAll();
+//			myBackground.repaint();
+//		}
+		
+		
+		for(int i = 0; i < customers.size(); i++)
 		{
-			myCustomers[queue][position].setIcon(myController.getCustomer().getIcon());
-			myCustomers[queue][position].setSize(myController.getCustomerSize());
+			Customer customer = customers.get(i);
+			myCustomers[queue][position].setIcon(customer.getIcon());
+			myCustomers[queue][position].setSize(customer.getSize());
 			setCustomerLocation(queue, position);
 			myCustomers[queue][position].setVisible(true);
 			myBackground.add(myCustomers[queue][position]);
 			myBackground.repaint();
-		}
+		}		
+
+//		
+//		if(myController.getQueueSize(queue) <= MAX_PEOPLE_IN_LINE)
+//		{
+//			myCustomers[queue][position].setIcon(myController.getCustomer().getIcon());
+//			myCustomers[queue][position].setSize(myController.getCustomerSize());
+//			setCustomerLocation(queue, position);
+//			myCustomers[queue][position].setVisible(true);
+//			myBackground.add(myCustomers[queue][position]);
+//			myBackground.repaint();
+//		}
 		
 		
 		

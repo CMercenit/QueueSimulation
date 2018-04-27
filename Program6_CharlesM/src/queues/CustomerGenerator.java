@@ -94,6 +94,7 @@ public abstract class CustomerGenerator implements Runnable
 	
 	public void suspend()
 	{
+		System.out.println("Thread in CustomerGenerator paused.");
 		mySuspended = true;
 	}
 	

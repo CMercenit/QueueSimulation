@@ -37,6 +37,11 @@ public class Queue
 		return myLinkedList.size();
 	}
 	
+	public Customer get(int num)
+	{
+		return myLinkedList.get(num);
+	}
+	
 	public Vector<Customer> getCustomers()
 	{
 		Vector<Customer> customers = new Vector<Customer>();

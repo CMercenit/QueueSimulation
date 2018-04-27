@@ -62,14 +62,14 @@ public class Customer
 		return myServiceTime;
 	}
 	
-	public void setWaitTime(long num)
+	public void addToWaitTime(long num)
 	{
-		myWaitTime = num;
+		myWaitTime += num;
 	}
 	
-	public void setServiceTime(long num)
+	public void addToServiceTime(long num)
 	{
-		myServiceTime = num;
+		myServiceTime += num;
 	}
 	
 	public String toString()

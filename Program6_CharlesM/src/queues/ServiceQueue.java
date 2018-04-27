@@ -12,30 +12,28 @@ public class ServiceQueue extends Queue
 	public ServiceQueue()
 	{
 		super();
-	//	myNumCustomersServedSoFar = 0;
-//CHANGE THIS< ONLY FOR TESTING
-		myNumCustomersServedSoFar = 5;
+		myNumCustomersServedSoFar = 0;
 		myNumCustomersInLine = 0;
 	}
 	
 	public void addToElapsedTime(int elapsed)
 	{
-		myTotalTime = myTotalTime + elapsed;
+		myTotalTime += elapsed;
 	}
 	
 	public void addToIdleTime(int idle)
 	{
-		myTotalIdleTime = myTotalIdleTime + idle;
+		myTotalIdleTime += idle;
 	}
 	
 	public void addToWaitTime(int wait)
 	{
-		myTotalWaitTime = myTotalWaitTime + wait;
+		myTotalWaitTime += wait;
 	}
 	
 	public void addToServiceTime(int service)
 	{
-		myTotalServiceTime = myTotalServiceTime + service;
+		myTotalServiceTime += service;
 	}
 	
 	public void insertCustomer(Customer customer)
