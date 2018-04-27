@@ -19,19 +19,10 @@ import queues.ServiceQueue;
  * (NECESSARY)
  * Color in Customer Images heads
  * Display unique customer images when they are generated (have to call update view immediately after a customer is generated instead of every 100 ms)
- * Dequeue customers using cashiers
- * Update cashier stats
  * (BONUS)
  * Add ManagerMom Customer type + image, change cashier image once they reach the front of the line
  * Add slider that slows down or speeds up simulation time (slider added, doesn't do anything)
- * 	
- * 
- * PROBLEMS:
- * Cashier throws an exception because it tries to dequeue an empty service queue
- * Customer images don't display properly, aren't in the correct position
- * 	If I set generation time to 10 (less than update view's sleep), only every other customer or every three customers is shown. If I set generation time
- * 	to 1000 (more than update view's sleep), all customers are shown but the images change frequently. If I set generation time to 100 (exactly update
- * 	view's sleep), it almost works perfectly with a slight hiccough at the end.
+ * Add enable/disable text fields
  * 
  * 
  * 
@@ -260,6 +251,7 @@ public class SimulationView
 //		myStats1.setLocation(8, 50);
 		myStats1.setLocation(8, 95);
 		myStats1.setEditable(false);
+		myStats1.setFont(new Font("Font 1", Font.BOLD, 20));
 		myStatsPanel.add(myStats1);
 		
 		myStats2 = new JTextArea();
@@ -271,9 +263,10 @@ public class SimulationView
 //		myStats2.setLocation(8, 375);
 		myStats2.setLocation(8, 400);
 		myStats2.setEditable(false);
+		myStats2.setFont(new Font("Font 1", Font.BOLD, 20));
 		myStatsPanel.add(myStats2);
 		
-		myHeading1 = new JTextField("Customer Stats: ");
+		myHeading1 = new JTextField("Overall Stats: ");
 		myHeading1.setLayout(null);
 		myHeading1.setSize(115, 25);
 		myHeading1.setBackground(new Color(225, 225, 225));
@@ -513,7 +506,7 @@ public class SimulationView
 		}		
 	}
 	
-	public void setCustomerStatsText(String text)
+	public void setOverallStatsText(String text)
 	{
 		myStats1.setText(text);
 	}
@@ -622,17 +615,11 @@ public class SimulationView
 		{
 			position = MAX_PEOPLE_IN_LINE - 1;
 		}
-		
-//		for(int i = 0; i < customers.size(); i++)
-//		{
-//			myBackground.removeAll();
-//			myBackground.repaint();
-//		}
-		
+				
 		
 		for(int i = 0; i < customers.size(); i++)
 		{
-			Customer customer = customers.get(i);
+			Customer customer = customers.get(i);		
 			myCustomers[queue][position].setIcon(customer.getIcon());
 			myCustomers[queue][position].setSize(customer.getSize());
 			setCustomerLocation(queue, position);
@@ -656,7 +643,7 @@ public class SimulationView
 		
 		int customersLeft = num - MAX_PEOPLE_IN_LINE;
 		int counter = 0;
-		while(customersLeft > -1)
+		while(customersLeft > 0)
 		{
 			setOverflowText(counter, queue);
 			counter++;
@@ -670,6 +657,7 @@ public class SimulationView
 //		System.out.println("location num: " + num);
 		
 //Tried to use a switch(queue) here but it broke it
+		
 		
 		boolean b = true;
 		if(queue == 0)
@@ -899,5 +887,10 @@ public class SimulationView
 	public JLabel[] getCashiers()
 	{
 		return myCashiers;
+	}
+	
+	public int getSliderValue()
+	{
+		return mySlider.getValue();
 	}
 }

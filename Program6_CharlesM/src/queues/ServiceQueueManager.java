@@ -30,14 +30,14 @@ public class ServiceQueueManager
 		myCashiers = new UniformCashier[numQueues];
 		
 		myCustomerGenerator = new UniformCustomerGenerator(maxTimeBetweenCustomers, maxNumCustomers, this);
-		System.out.println("myCustomerGenerator started.");
+//		System.out.println("myCustomerGenerator started.");
 		myCustomerGenerator.start();
 		
 		for(int i = 0; i < numQueues; i++)
 		{
 			myServiceQueues[i] = new ServiceQueue();
 			myCashiers[i] = new UniformCashier(maxServiceTime, myServiceQueues[i]);
-			System.out.println("myCashiers[" + i + "] started.");
+//			System.out.println("myCashiers[" + i + "] started.");
 			myCashiers[i].start();
 		}
 	}
@@ -54,13 +54,13 @@ public class ServiceQueueManager
 	
 	public synchronized void resume()
 	{
-		System.out.println("myCustomerGenerator resumed.");
+//		System.out.println("myCustomerGenerator resumed.");
 		myCustomerGenerator.setSuspended(mySuspended);
 		myCustomerGenerator.resume();
 		
 		for(int i = 0; i < myNumServiceQueues; i++)
 		{
-			System.out.println("myCashiers[" + i + "] resumed.");
+//			System.out.println("myCashiers[" + i + "] resumed.");
 			myCashiers[i].setSuspended(mySuspended);
 			myCashiers[i].resume();
 		}
@@ -211,5 +211,23 @@ public class ServiceQueueManager
 	public Vector<Customer> getCustomers(int queue)
 	{
 		return myServiceQueues[queue].getCustomers();
+	}
+	
+	public String getName(int queue)
+	{
+		return myServiceQueues[queue].getName();
+	}
+	
+	public void setGenerationTime(float num)
+	{
+		myCustomerGenerator.setGenerationTime(num);		
+	}
+	
+	public void setServiceTime(float num)
+	{
+		for(int i = 0; i < myCashiers.length; i++)
+		{
+			myCashiers[i].setServiceTime(num);
+		}
 	}
 }

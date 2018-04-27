@@ -4,6 +4,7 @@ import java.awt.Dimension;
 
 import queues.Customer;
 import queues.CustomerGenerator;
+import queues.Name;
 import queues.ServiceQueue;
 import queues.ServiceQueueManager;
 import queues.SimulationModel;
@@ -30,9 +31,12 @@ public class SimulationController implements Runnable
 	private ServiceQueue myServiceQueue;
 	private int myQueue;
 	private int myCounter;
+	private String myName;
 	private boolean mySuspended;
 	private boolean myStarted;
 	private Thread myThread;
+	
+	private int myOriginalGenerationTime;
 	
 	
 	public SimulationController()
@@ -57,6 +61,8 @@ public class SimulationController implements Runnable
 		{
 			synchronized(this)
 			{
+				myOriginalGenerationTime = myView.getGenerationTime();
+				
 				myServiceQueueManager = new ServiceQueueManager(myView.getComboBoxNumber(), 
 						myView.getGenerationTime(),
 						myView.getServiceTime(),
@@ -101,11 +107,18 @@ public class SimulationController implements Runnable
 			
 			try
 			{
+				if(myView.getSliderValue() == 0)
+				{
+					System.out.println("Waiting for Infinity...");
+				}
+				else if(myView.getSliderValue() != 1.0 && myView.getSliderValue() != 0)
+				{
+					myServiceQueueManager.setGenerationTime((float)(myView.getSliderValue() / 100.0));
+					myServiceQueueManager.setServiceTime((float)(myView.getSliderValue() / 100.0));
+				}
 				
-		//		System.out.println("Thread in Controller going");
-//Change this
 				Thread.sleep(100);
-//Change this
+				
 				for(int i = 0; i < myView.getComboBoxNumber(); i++)
 				{
 					this.displayCustomers(i);
@@ -113,48 +126,6 @@ public class SimulationController implements Runnable
 				
 //After pause, for each queue create a vector, go through the queue, get the icon for 0, for 1, fgor 2, until the size of the vector, send a vector of icons
 //to the view and it sets the icon for all of the images. do this all at once instead of getting customer icons one by one.
-				
-//				if(myQueue == 0)
-//				{
-//					if(myQueue < myView.getComboBoxNumber())
-//					{
-//	//					this.displayCustomers(myQueue);
-//					}
-//					myQueue = 1;
-//				}
-//				else if(myQueue == 1)
-//				{
-//					if(myQueue < myView.getComboBoxNumber())
-//					{
-//	//					this.displayCustomers(myQueue);
-//					}
-//					myQueue = 2;
-//				}
-//				else if(myQueue == 2)
-//				{
-//					if(myQueue < myView.getComboBoxNumber())
-//					{
-//	//					this.displayCustomers(myQueue);
-//					}
-//					myQueue = 3;
-//				}
-//				else if(myQueue == 3)
-//				{
-//					if(myQueue < myView.getComboBoxNumber())
-//					{
-//	//					this.displayCustomers(myQueue);
-//					}
-//					myQueue = 4;
-//				}
-//				else if(myQueue == 4)
-//				{
-//					if(myQueue < myView.getComboBoxNumber())
-//					{
-//	//					this.displayCustomers(myQueue);
-//					}
-//					myQueue = 0;
-//				}
-				
 				
 			}
 			catch(InterruptedException e)
@@ -181,6 +152,17 @@ public class SimulationController implements Runnable
 		myView.setCustomersInLine(queue, numInQueue, myServiceQueueManager.getServiceQueue(queue));
 		
 		myView.setNumServedText(myServiceQueueManager.totalServedSoFar(queue), queue);
+		
+	
+//What is the difference between idle time and wait time (for a customer)		
+		String text = "Total Served: " + myServiceQueueManager.totalServedSoFar() + "\n";
+		text += "Total Service Time: " + myServiceQueueManager.totalServiceTime() + "\n";
+		text += "Avg Service Time: " + myServiceQueueManager.averageServiceTime() + "\n";
+		text += "Total Wait Time: " + myServiceQueueManager.totalWaitTime() + "\n";
+		text += "Avg Wait Time: " + myServiceQueueManager.averageWaitTime() + "\n";
+		text += "Total Idle Time: " + myServiceQueueManager.totalIdleTime() + "\n";
+		text += "Avg Idle Time: " + myServiceQueueManager.averageIdleTime() + "\n";
+		myView.setOverallStatsText(text);
 	}
 	
 	public void startPause()
@@ -207,15 +189,6 @@ public class SimulationController implements Runnable
 //			myView.disable(); (disables text input fields so the simulation can't be broken)		
 //			Once simulation is done, myView.enable();
 		}
-		
-//		if(mySuspended)
-//		{
-//			this.resume();
-//		}
-//		else
-//		{
-//			this.suspend();
-//		}
 	}
 	
 	public synchronized void resume()
@@ -242,9 +215,10 @@ public class SimulationController implements Runnable
 		}
 		else
 		{
-			String text = "Average Wait Time: " + myServiceQueueManager.getServiceQueue(num).averageWaitTime() + "\n";
-			text = text + "Average Idle Time: " + myServiceQueueManager.getServiceQueue(num).averageIdleTime() + "\n";
-			text = text + "Average Service Time: " + myServiceQueueManager.getServiceQueue(num).averageServiceTime() + "\n";
+			String text = "Name: " + myServiceQueueManager.getName(num) + "\n";
+			text += "Total Served: " + myServiceQueueManager.totalServedSoFar(num) + "\n";
+			text += "Avg Idle Time: " + myServiceQueueManager.getServiceQueue(num).averageIdleTime() + "\n";
+			text += "Avg Service Time: " + myServiceQueueManager.getServiceQueue(num).averageServiceTime() + "\n";
 			myView.setCashierStatsText(text);
 		}		
 	}

@@ -18,6 +18,8 @@ public abstract class CustomerGenerator implements Runnable
 	private boolean myGenerated;
 	private Thread myThread;
 	
+	private int myOriginalMaxTimeBetweenCustomers;
+	
 	public abstract int generateTimeBetweenCustomers();
 	
 	public CustomerGenerator(int maxTimeBetweenCustomers,
@@ -31,11 +33,13 @@ public abstract class CustomerGenerator implements Runnable
 		mySuspended = false;
 		myGenerated = false;
 		myThread = new Thread(this);
+		
+		myOriginalMaxTimeBetweenCustomers = maxTimeBetweenCustomers;
 	}
 	
 	public Customer generateCustomer()
 	{
-		System.out.println("customer generated");
+//		System.out.println("customer generated");
 		myCustomer = new Customer();
 		myServiceQueueManager.enqueue(myCustomer);
 		myGenerated = true;
@@ -161,5 +165,11 @@ public abstract class CustomerGenerator implements Runnable
 	public boolean isGenerated()
 	{
 		return myGenerated;
+	}
+	
+	public void setGenerationTime(float num)
+	{
+		myMaxTimeBetweenCustomers = myOriginalMaxTimeBetweenCustomers;
+		myMaxTimeBetweenCustomers = (int)(myMaxTimeBetweenCustomers / num);
 	}
 }

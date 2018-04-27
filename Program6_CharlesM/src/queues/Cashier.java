@@ -18,6 +18,8 @@ public abstract class Cashier implements Runnable
 	private boolean mySuspended;
 	private Thread myThread;
 	
+	private int myOriginalMaxServiceTime;
+	
 	public abstract int generateServiceTime();
 	
 	public Cashier(int maxServiceTime, ServiceQueue serviceQueue)
@@ -27,6 +29,8 @@ public abstract class Cashier implements Runnable
 		myServiceTime = 0;
 		mySuspended = false;
 		myThread = new Thread(this);
+		
+		myOriginalMaxServiceTime = maxServiceTime;
 	}
 	
 	public int serveCustomer()
@@ -48,11 +52,12 @@ public abstract class Cashier implements Runnable
 		return myNumServed;
 	*/
 		
-		System.out.println("Customer served.");
+//		System.out.println("Customer served.");
 		myCustomer = myServiceQueue.serveCustomer();
 		myCustomer.addToWaitTime(System.currentTimeMillis() - myCustomer.getEntryTime());
 		myServiceTime = (long)generateServiceTime();
 		myCustomer.addToServiceTime(myServiceTime);
+		myServiceQueue.addToServiceTime(myServiceTime);
 		myNumServed++;
 		
 		return myNumServed;
@@ -64,7 +69,7 @@ public abstract class Cashier implements Runnable
 		{
 			synchronized(this)
 			{
-				System.out.println("Cashier running.");
+//				System.out.println("Cashier running.");
 				this.serveCustomers();
 			}
 		}
@@ -80,7 +85,7 @@ public abstract class Cashier implements Runnable
 	{
 		try
 		{
-			System.out.println("Cashier started");
+//			System.out.println("Cashier started");
 			myThread.start();
 		}
 		catch(IllegalThreadStateException e)
@@ -152,5 +157,11 @@ public abstract class Cashier implements Runnable
 		{
 			this.wait();
 		}
+	}
+	
+	public void setServiceTime(float num)
+	{
+		myMaxServiceTime = myOriginalMaxServiceTime;
+		myMaxServiceTime = (int)(myMaxServiceTime / num);
 	}
 }

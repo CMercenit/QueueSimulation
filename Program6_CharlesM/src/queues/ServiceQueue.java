@@ -8,12 +8,14 @@ public class ServiceQueue extends Queue
 	private int myTotalServiceTime;
 	private int myTotalIdleTime;
 	private int myTotalTime;
+	private Name myName;
 	
 	public ServiceQueue()
 	{
 		super();
 		myNumCustomersServedSoFar = 0;
 		myNumCustomersInLine = 0;
+		myName = new Name();
 	}
 	
 	public void addToElapsedTime(int elapsed)
@@ -31,7 +33,7 @@ public class ServiceQueue extends Queue
 		myTotalWaitTime += wait;
 	}
 	
-	public void addToServiceTime(int service)
+	public void addToServiceTime(long service)
 	{
 		myTotalServiceTime += service;
 	}
@@ -50,17 +52,38 @@ public class ServiceQueue extends Queue
 	
 	public int averageWaitTime()
 	{
-		return myTotalWaitTime / myNumCustomersServedSoFar;
+		if(myNumCustomersServedSoFar == 0)
+		{
+			return myTotalWaitTime;
+		}
+		else
+		{
+			return myTotalWaitTime / myNumCustomersServedSoFar;
+		}
 	}
 	
 	public int averageServiceTime()
 	{
-		return myTotalServiceTime / myNumCustomersServedSoFar;
+		if(myNumCustomersServedSoFar == 0)
+		{
+			return myTotalServiceTime;
+		}
+		else
+		{
+			return myTotalServiceTime / myNumCustomersServedSoFar;
+		}
 	}
 	
 	public int averageIdleTime()
 	{
-		return myTotalIdleTime / myNumCustomersServedSoFar;
+		if(myNumCustomersServedSoFar == 0)
+		{
+			return myTotalIdleTime;
+		}
+		else
+		{
+			return myTotalIdleTime / myNumCustomersServedSoFar;
+		}
 	}
 	
 	public int getNumCustomersServedSoFar()
@@ -97,5 +120,10 @@ public class ServiceQueue extends Queue
 	public Customer getCustomer()
 	{
 		return peek();
+	}
+	
+	public String getName()
+	{
+		return myName.toString();
 	}
 }
