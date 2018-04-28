@@ -42,14 +42,14 @@ public class Queue
 		return myLinkedList.get(num);
 	}
 	
-	public Vector<Customer> getCustomers()
-	{
-		Vector<Customer> customers = new Vector<Customer>();
-		for(Customer c : myLinkedList)
-		{
-			customers.add(c);
-		}
-		
-		return customers;
-	}
+//	public Vector<Customer> getCustomers()
+//	{
+//		Vector<Customer> customers = new Vector<Customer>();
+//		for(Customer c : myLinkedList)
+//		{
+//			customers.add(c);
+//		}
+//		
+//		return customers;
+//	}
 }

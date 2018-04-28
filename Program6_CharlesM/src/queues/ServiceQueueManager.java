@@ -208,10 +208,10 @@ public class ServiceQueueManager
 		return queue.size();
 	}
 	
-	public Vector<Customer> getCustomers(int queue)
-	{
-		return myServiceQueues[queue].getCustomers();
-	}
+//	public Vector<Customer> getCustomers(int queue)
+//	{
+//		return myServiceQueues[queue].getCustomers();
+//	}
 	
 	public String getName(int queue)
 	{

@@ -1,6 +1,9 @@
 package viewcontroller;
 
 import java.awt.Dimension;
+import java.util.Vector;
+
+import javax.swing.ImageIcon;
 
 import queues.Customer;
 import queues.CustomerGenerator;
@@ -31,7 +34,6 @@ public class SimulationController implements Runnable
 	private ServiceQueue myServiceQueue;
 	private int myQueue;
 	private int myCounter;
-	private String myName;
 	private boolean mySuspended;
 	private boolean myStarted;
 	private Thread myThread;
@@ -151,7 +153,7 @@ public class SimulationController implements Runnable
 		int numInQueue = myServiceQueueManager.getNumInQueue(queue);
 		myView.setCustomersInLine(queue, numInQueue, myServiceQueueManager.getServiceQueue(queue));
 		
-		myView.setNumServedText(myServiceQueueManager.totalServedSoFar(queue), queue);
+		myView.setNumServedText(myServiceQueueManager.totalServedSoFar(queue), queue);		
 		
 	
 //What is the difference between idle time and wait time (for a customer)		

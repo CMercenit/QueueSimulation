@@ -16,12 +16,7 @@ import queues.ServiceQueue;
  * 
  * TODO:
  * Should I make individual methods for each thing in the view?
- * (NECESSARY)
- * Color in Customer Images heads
- * Display unique customer images when they are generated (have to call update view immediately after a customer is generated instead of every 100 ms)
  * (BONUS)
- * Add ManagerMom Customer type + image, change cashier image once they reach the front of the line
- * Add slider that slows down or speeds up simulation time (slider added, doesn't do anything)
  * Add enable/disable text fields
  * 
  * 
@@ -38,14 +33,8 @@ public class SimulationView
 	private final ImageIcon SCALED_CASHIER_CLOSED = new ImageIcon(CASHIER_CLOSED.getScaledInstance(124, 60, Image.SCALE_SMOOTH));
 	private final Image CASHIER_OPEN = Toolkit.getDefaultToolkit().getImage("images/Cashier(Transparent).png"); //160 x 155
 	private final ImageIcon SCALED_CASHIER_OPEN = new ImageIcon(CASHIER_OPEN.getScaledInstance(127, 123, Image.SCALE_SMOOTH)); //137 x 133
-	private final Image REGULAR_PERSON = Toolkit.getDefaultToolkit().getImage("images/RegularMan(Transparent).png"); //55 x 155
-	private final ImageIcon SCALED_REGULAR_PERSON = new ImageIcon(REGULAR_PERSON.getScaledInstance(50, 100, Image.SCALE_SMOOTH)); //23 x 66
-	private final Image BOW_TIE_PERSON = Toolkit.getDefaultToolkit().getImage("images/BowTie(Transparent).png"); //50 x 157
-	private final ImageIcon SCALED_BOW_TIE_PERSON = new ImageIcon(BOW_TIE_PERSON.getScaledInstance(40, 95, Image.SCALE_SMOOTH)); //21 x 67
-	private final Image PONY_TAIL_PERSON = Toolkit.getDefaultToolkit().getImage("images/PonyTail(Transparent).png"); //105 x 160
-	private final ImageIcon SCALED_PONY_TAIL_PERSON = new ImageIcon(PONY_TAIL_PERSON.getScaledInstance(65, 108, Image.SCALE_SMOOTH)); //45 x 69
-	private final Image TOP_HAT_PERSON = Toolkit.getDefaultToolkit().getImage("images/TopHat(Transparent).png"); //55 x 185
-	private final ImageIcon SCALED_TOP_HAT_PERSON = new ImageIcon(TOP_HAT_PERSON.getScaledInstance(53, 128, Image.SCALE_SMOOTH)); //23 x 79
+	private final Image CASHIER_MANAGER = Toolkit.getDefaultToolkit().getImage("images/CashierManager(Transparent).png");
+	private final ImageIcon SCALED_CASHIER_MANAGER = new ImageIcon(CASHIER_MANAGER.getScaledInstance(125, 125, Image.SCALE_SMOOTH));
 	
 	private final int MAX_PEOPLE_IN_LINE = 11;
 	private final int MAX_NUM_CASHIERS = 5;
@@ -78,12 +67,6 @@ public class SimulationView
 	private JComboBox<Integer> myNumCashiers;
 	private JLabel[][] myCustomers = new JLabel[MAX_NUM_CASHIERS][MAX_PEOPLE_IN_LINE];
 	private JLabel[] myCashiers = new JLabel[MAX_NUM_CASHIERS];
-	private JLabel  myRegularPerson,
-					myBowTiePerson,
-					myPonyTailPerson,
-					myTopHatPerson,
-					myCashier,
-					myCashierClosed;
 	private JLabel myBackground;
 	private JSlider mySlider;	
 	private JPanel myStatsPanel;
@@ -124,109 +107,9 @@ public class SimulationView
 			}
 		}
 		
-
-/*
-//TESTING PEOPLE IMAGES
-		JLabel test = new JLabel(SCALED_REGULAR_PERSON);
-		test.setSize(50, 100);
-		test.setLocation(40, 600);
-		test.setVisible(true);
-		mySimulationPanel.add(test);
 		
-		JLabel test2 = new JLabel(SCALED_BOW_TIE_PERSON);
-		test2.setSize(50, 100);
-		test2.setLocation(95, 600);
-		test2.setVisible(true);
-		mySimulationPanel.add(test2);
 		
-		JLabel test3 = new JLabel(SCALED_TOP_HAT_PERSON);
-		test3.setSize(50, 125);
-		test3.setLocation(150, 580);
-		test3.setVisible(true);
-		mySimulationPanel.add(test3);
 		
-		JLabel test4 = new JLabel(SCALED_PONY_TAIL_PERSON);
-		test4.setSize(75, 100);
-		test4.setLocation(195, 598);
-		test4.setVisible(true);
-		mySimulationPanel.add(test4);
-		
-		JLabel[] test5 = new JLabel[MAX_PEOPLE_IN_LINE];
-		boolean b = true;
-		for(int i = 0; i < MAX_PEOPLE_IN_LINE; i++)
-		{
-			test5[i] = new JLabel(SCALED_REGULAR_PERSON);
-			test5[i].setSize(50, 100);
-			test5[i].setVisible(true);
-			if(b)
-			{
-				test5[i].setLocation(614, 627 - (60*i));
-				b = !b;
-			}
-			else
-			{
-				test5[i].setLocation(596, 627 - (60*i));
-				b = !b;
-			}
-			mySimulationPanel.add(test5[i]);
-		}
-		
-		JLabel[] test6 = new JLabel[MAX_PEOPLE_IN_LINE];
-		boolean e = true;
-		ImageIcon[] people = new ImageIcon[4];
-		people[0] = SCALED_REGULAR_PERSON;
-		people[1] = SCALED_BOW_TIE_PERSON;
-		people[2] = SCALED_PONY_TAIL_PERSON;
-		people[3] = SCALED_TOP_HAT_PERSON;
-		for(int i = 0; i < MAX_PEOPLE_IN_LINE; i++)
-		{
-			int num = (int)(Math.random()*4);
-			test6[i] = new JLabel(people[num]);
-			if(test6[i].getIcon().equals(SCALED_REGULAR_PERSON))
-			{
-				test6[i].setSize(50, 100);
-			}
-			else if(test6[i].getIcon().equals(SCALED_TOP_HAT_PERSON))
-			{
-				test6[i].setSize(50, 125);
-			}
-			else if(test6[i].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-			{
-				test6[i].setSize(75, 100);
-			}
-			else
-			{
-				test6[i].setSize(50, 100);
-			}
-			test6[i].setVisible(true);
-			if(e)
-			{
-				if(test6[i].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-				{
-					test6[i].setLocation(472, 627 - (60*i));
-				}
-				else
-				{
-					test6[i].setLocation(474, 627 - (60*i)); //18 apart
-				}
-				e = !e;
-			}
-			else
-			{
-				if(test6[i].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-				{
-					test6[i].setLocation(452, 627 - (60*i));
-				}
-				else
-				{
-					test6[i].setLocation(456, 627 - (60*i));
-				}
-				e = !e;
-			}
-			mySimulationPanel.add(test6[i]);
-		}
-//TESTING PEOPLE IMAGES		
- */
 		
 		
 		myStatsPanel = new JPanel();
@@ -592,8 +475,7 @@ public class SimulationView
 	}
 	
 	public void setCustomersInLine(int queue, int num, ServiceQueue customers)
-	{
-//queue = line that i'm updating, num = amount of customers in that line, MAX_PEOPLE_IN_LINE = 11
+	{//queue = line that i'm updating, num = amount of customers in that line, MAX_PEOPLE_IN_LINE = 11
 		
 
 //Doesn't place the customers properly using setCustomerLocation method
@@ -613,37 +495,60 @@ public class SimulationView
 		}
 		else
 		{
+			//This is why the last image keeps changing with the Customer customer = customers.get(i) loop
 			position = MAX_PEOPLE_IN_LINE - 1;
 		}
+		
+		
+//		This is for the vector of images
+//		for(ImageIcon i: images)
+//		{
+//			
+//		}
 				
 		
-		for(int i = 0; i < customers.size(); i++)
+		
+ //		Reason why previous images aren't deleted is position keeps going up, have to go through all of myCustomers[][] and replace all images
+ 
+ 
+// 		for(int i = 0; i < myCustomers[queue].length; i++)
+// 		{
+// 			
+// 		}
+		
+		for(int i = (MAX_PEOPLE_IN_LINE - 1); i > position; i--)
 		{
-			Customer customer = customers.get(i);		
-			myCustomers[queue][position].setIcon(customer.getIcon());
-			myCustomers[queue][position].setSize(customer.getSize());
-			setCustomerLocation(queue, position);
-			myCustomers[queue][position].setVisible(true);
-			myBackground.add(myCustomers[queue][position]);
-			myBackground.repaint();
-		}		
+			myCustomers[queue][i].setIcon(null);
+			if(position == 0)
+			{
+				myCustomers[queue][0].setIcon(null);
+			}
+		} 
 
-//		
-//		if(myController.getQueueSize(queue) <= MAX_PEOPLE_IN_LINE)
-//		{
-//			myCustomers[queue][position].setIcon(myController.getCustomer().getIcon());
-//			myCustomers[queue][position].setSize(myController.getCustomerSize());
-//			setCustomerLocation(queue, position);
-//			myCustomers[queue][position].setVisible(true);
-//			myBackground.add(myCustomers[queue][position]);
-//			myBackground.repaint();
-//		}
-		
-		
+		for(int i = 1; i < (position + 1); i++)
+		{
+			Customer customer = customers.get(customers.size() - i);
+			
+			if(customer.getIsMom())
+			{
+				myCashiers[queue].setIcon(SCALED_CASHIER_MANAGER);
+			}
+			else
+			{
+				myCashiers[queue].setIcon(SCALED_CASHIER_OPEN);
+			}
+			
+			myCustomers[queue][i].setIcon(customer.getIcon());
+			myCustomers[queue][i].setSize(customer.getSize());
+			setCustomerLocation(queue, i);
+			myCustomers[queue][i].setVisible(true);
+			myBackground.add(myCustomers[queue][i]);
+			myBackground.repaint();
+		}
 		
 		int customersLeft = num - MAX_PEOPLE_IN_LINE;
 		int counter = 0;
-		while(customersLeft > 0)
+		while(customersLeft > -1)
 		{
 			setOverflowText(counter, queue);
 			counter++;
@@ -653,219 +558,89 @@ public class SimulationView
 	
 	public void setCustomerLocation(int queue, int num)
 	{
-//		System.out.println("location queue: " + queue);
-//		System.out.println("location num: " + num);
 		
-//Tried to use a switch(queue) here but it broke it
-		
-		
-		boolean b = true;
-		if(queue == 0)
+		switch(queue)
 		{
-			if(b)
-			{
+			case 0:
 				myCustomers[queue][num].setLocation(54, (627 - (60*num)));
-				b = !b;
-			}
-			else
-			{
-				myCustomers[queue][num].setLocation(36, (627 - (60*num)));
-				b = !b;
-			}
-		}
-		else if(queue == 1)
-		{
-			if(b)
-			{
+				break;
+			case 1:
 				myCustomers[queue][num].setLocation(194, (627 - (60*num)));
-				b = !b;
-			}
-			else
-			{
-				myCustomers[queue][num].setLocation(176, (627 - (60*num)));
-			}
-		}
-		else if(queue == 2)
-		{
-			if(b)
-			{
+				break;
+			case 2:
 				myCustomers[queue][num].setLocation(334, (627 - (60*num)));
-				b = !b;
-			}
-			else
-			{
-				myCustomers[queue][num].setLocation(316, (627 - (60*num)));
-			}
-		}
-		else if(queue == 3)
-		{
-			if(b)
-			{
+				break;
+			case 3:
 				myCustomers[queue][num].setLocation(474, (627 - (60*num)));
-				b = !b;
-			}
-			else
-			{
-				myCustomers[queue][num].setLocation(456, (627 - (60*num)));
-			}
-		}
-		else if(queue == 4)
-		{
-			if(b)
-			{
+				break;
+			case 4:
 				myCustomers[queue][num].setLocation(614, (627 - (60*num)));
-				b = !b;
-			}
-			else
-			{
-				myCustomers[queue][num].setLocation(596, (627 - (60*num)));
-			}
+				break;
 		}
 		
 		
-		
-		
-		
-		
-//			boolean b;
-//			switch(queue)
+//		boolean b = true;
+//		if(queue == 0)
+//		{
+//			if(b)
 //			{
-//				case 0:
-//					b = true;
-//					if(b)
-//					{
-//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-//	//					{
-//	//						myCustomers[queue][num].setLocation(52, 627 - (60*num));
-//	//					}
-//	//					else
-//	//					{
-//							myCustomers[queue][num].setLocation(54, 627 - (60*num));
-//	//					}
-//						b = !b;
-//					}
-//					else
-//					{
-//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-//	//					{
-//	//						myCustomers[queue][num].setLocation(32, 627 - (60*num));
-//	//					}
-//	//					else
-//	//					{
-//							myCustomers[queue][num].setLocation(36, 627 - (60*num));
-//	//					}
-//						b = !b;
-//					}
-//					break;
-//				case 1:
-//					b = true;
-//					if(b)
-//					{
-//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-//	//					{
-//	//						myCustomers[queue][num].setLocation(192, 627 - (60*num));
-//	//					}
-//	//					else
-//	//					{
-//							myCustomers[queue][num].setLocation(194, 627 - (60*num));
-//	//					}
-//						b = !b;
-//					}
-//					else
-//					{
-//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-//	//					{
-//	//						myCustomers[queue][num].setLocation(172, 627 - (60*num));
-//	//					}
-//	//					else
-//	//					{
-//							myCustomers[queue][num].setLocation(176, 627 - (60*num));
-//	//					}
-//						b = !b;
-//					}
-//					break;
-//				case 2:
-//					b = true;
-//					if(b)
-//					{
-//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-//	//					{
-//	//						myCustomers[queue][num].setLocation(332, 627 - (60*num));
-//	//					}
-//	//					else
-//	//					{
-//							myCustomers[queue][num].setLocation(334, 627 - (60*num));
-//	//					}
-//						b = !b;
-//					}
-//					else
-//					{
-//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-//	//					{
-//	//						myCustomers[queue][num].setLocation(312, 627 - (60*num));
-//	//					}
-//	//					else
-//	//					{
-//							myCustomers[queue][num].setLocation(316, 627 - (60*num));
-//	//					}
-//						b = !b;
-//					}
-//					break;
-//				case 3:
-//					b = true;
-//					if(b)
-//					{
-//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-//	//					{
-//	//						myCustomers[queue][num].setLocation(472, 627 - (60*num));
-//	//					}
-//	//					else
-//	//					{
-//							myCustomers[queue][num].setLocation(474, 627 - (60*num));
-//	//					}
-//						b = !b;
-//					}
-//					else
-//					{
-//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-//	//					{
-//	//						myCustomers[queue][num].setLocation(452, 627 - (60*num));
-//	//					}
-//	//					else
-//	//					{
-//							myCustomers[queue][num].setLocation(456, 627 - (60*num));
-//	//					}
-//						b = !b;
-//					}
-//					break;
-//				case 4:
-//					b = true;
-//					if(b)
-//					{
-//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-//	//					{
-//	//						myCustomers[queue][num].setLocation(612, 627 - (60*num));
-//	//					}
-//	//					else
-//	//					{
-//							myCustomers[queue][num].setLocation(614, 627 - (60*num));
-//	//					}
-//						b = !b;
-//					}
-//					else
-//					{
-//	//					if(myCustomers[queue][num].getIcon().equals(SCALED_PONY_TAIL_PERSON))
-//	//					{
-//	//						myCustomers[queue][num].setLocation(592, 627 - (60*num));
-//	//					}
-//	//					else
-//	//					{
-//							myCustomers[queue][num].setLocation(596, 627 - (60*num));
-//	//					}
-//						b = !b;
-//					}
-//					break;
+//				myCustomers[queue][num].setLocation(54, (627 - (60*num)));
+//				b = !b;
 //			}
+//			else
+//			{
+//				myCustomers[queue][num].setLocation(36, (627 - (60*num)));
+//				b = !b;
+//			}
+//		}
+//		else if(queue == 1)
+//		{
+//			if(b)
+//			{
+//				myCustomers[queue][num].setLocation(194, (627 - (60*num)));
+//				b = !b;
+//			}
+//			else
+//			{
+//				myCustomers[queue][num].setLocation(176, (627 - (60*num)));
+//			}
+//		}
+//		else if(queue == 2)
+//		{
+//			if(b)
+//			{
+//				myCustomers[queue][num].setLocation(334, (627 - (60*num)));
+//				b = !b;
+//			}
+//			else
+//			{
+//				myCustomers[queue][num].setLocation(316, (627 - (60*num)));
+//			}
+//		}
+//		else if(queue == 3)
+//		{
+//			if(b)
+//			{
+//				myCustomers[queue][num].setLocation(474, (627 - (60*num)));
+//				b = !b;
+//			}
+//			else
+//			{
+//				myCustomers[queue][num].setLocation(456, (627 - (60*num)));
+//			}
+//		}
+//		else if(queue == 4)
+//		{
+//			if(b)
+//			{
+//				myCustomers[queue][num].setLocation(614, (627 - (60*num)));
+//				b = !b;
+//			}
+//			else
+//			{
+//				myCustomers[queue][num].setLocation(596, (627 - (60*num)));
+//			}
+//		}
 	}
 	
 	public void disable()
