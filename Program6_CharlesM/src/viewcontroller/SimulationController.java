@@ -10,7 +10,6 @@ import queues.CustomerGenerator;
 import queues.Name;
 import queues.ServiceQueue;
 import queues.ServiceQueueManager;
-import queues.SimulationModel;
 import queues.UniformCashier;
 import queues.UniformCustomerGenerator;
 
