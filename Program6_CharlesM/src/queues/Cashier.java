@@ -16,6 +16,7 @@ public abstract class Cashier implements Runnable
 	private ServiceQueue myServiceQueue;
 	private Customer myCustomer;
 	private boolean mySuspended;
+	private boolean myContinue;
 	private Thread myThread;
 	
 	private int myOriginalMaxServiceTime;
@@ -28,6 +29,7 @@ public abstract class Cashier implements Runnable
 		myServiceQueue = serviceQueue;
 		myServiceTime = 0;
 		mySuspended = false;
+		myContinue = true;
 		myThread = new Thread(this);
 		
 		myOriginalMaxServiceTime = maxServiceTime;
@@ -52,12 +54,16 @@ public abstract class Cashier implements Runnable
 		return myNumServed;
 	*/
 		
-//		System.out.println("Customer served.");
+//		myCustomer = myServiceQueue.serveCustomer();
+//		myCustomer = myServiceQueue.peek();
 		myCustomer = myServiceQueue.serveCustomer();
-		myCustomer.addToWaitTime(System.currentTimeMillis() - myCustomer.getEntryTime());
+//		myCustomer.addToWaitTime(System.currentTimeMillis() - myCustomer.getEntryTime());
+		myServiceQueue.addToCustomerWaitTime(System.currentTimeMillis() - myCustomer.getEntryTime());
 		myServiceTime = (long)generateServiceTime();
-		myCustomer.addToServiceTime(myServiceTime);
+//		myCustomer.addToServiceTime(myServiceTime);
+		myServiceQueue.addToCustomerServiceTime(myServiceTime);
 		myServiceQueue.addToServiceTime(myServiceTime);
+//		myServiceQueue.serveCustomer();
 		myNumServed++;
 		
 		return myNumServed;
@@ -113,7 +119,9 @@ public abstract class Cashier implements Runnable
 	
 	public void serveCustomers() throws InterruptedException
 	{
-		while(true)
+//		while(true)
+//		{
+		do
 		{
 			this.waitWhileSuspended();
 			
@@ -136,7 +144,9 @@ public abstract class Cashier implements Runnable
 				error = e.toString();
 				System.out.println(error);
 			}
-		}		
+		}
+		while(myContinue);
+//		}		
 	}
 	
 	public synchronized void resume()
@@ -163,5 +173,10 @@ public abstract class Cashier implements Runnable
 	{
 		myMaxServiceTime = myOriginalMaxServiceTime;
 		myMaxServiceTime = (int)(myMaxServiceTime / num);
+	}
+	
+	public void setContinue(boolean b)
+	{
+		myContinue = b;
 	}
 }

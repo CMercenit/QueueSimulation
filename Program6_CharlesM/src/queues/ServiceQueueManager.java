@@ -11,11 +11,15 @@ public class ServiceQueueManager
 	private int myTotalWaitTime;
 	private int myTotalServiceTime;
 	private int myTotalIdleTime;
-	private int myPresentTime;
+	private int myTotalCustomerServiceTime;
+	private int myTotalCustomerWaitTime;
+	private long myPresentTime;
 	private long myStartTime;
 	private float myAverageWaitTime;
 	private float myAverageServiceTime;
 	private float myAverageIdleTime;
+	private float myAverageCustomerServiceTime;
+	private float myAverageCustomerWaitTime;
 	private ServiceQueue[] myServiceQueues;
 	private ServiceQueue myShortestQueue;
 	private UniformCustomerGenerator myCustomerGenerator;
@@ -106,7 +110,7 @@ public class ServiceQueueManager
 		
 		for(int i = 0; i < myNumServiceQueues; i++)
 		{
-			myTotalWaitTime = myTotalWaitTime + myServiceQueues[i].getTotalWaitTime();
+			myTotalWaitTime += myServiceQueues[i].getTotalWaitTime();
 		}
 		return myTotalWaitTime;
 	}
@@ -117,7 +121,7 @@ public class ServiceQueueManager
 		
 		for(int i = 0; i < myNumServiceQueues; i++)
 		{
-			myTotalServiceTime = myTotalServiceTime + myServiceQueues[i].getTotalServiceTime();
+			myTotalServiceTime += myServiceQueues[i].getTotalServiceTime();
 		}
 		return myTotalServiceTime;
 	}
@@ -128,7 +132,7 @@ public class ServiceQueueManager
 		
 		for(int i = 0; i < myNumServiceQueues; i++)
 		{
-			myTotalIdleTime = myTotalIdleTime + myServiceQueues[i].getTotalIdleTime();
+			myTotalIdleTime += myServiceQueues[i].getTotalIdleTime();
 		}
 		return myTotalIdleTime;
 	}
@@ -139,7 +143,7 @@ public class ServiceQueueManager
 		
 		for(int i = 0; i < myNumServiceQueues; i++)
 		{
-			myAverageWaitTime = myAverageWaitTime + myServiceQueues[i].averageWaitTime();
+			myAverageWaitTime += myServiceQueues[i].averageWaitTime();
 		}
 		return myAverageWaitTime / myNumServiceQueues;
 	}
@@ -150,7 +154,7 @@ public class ServiceQueueManager
 		
 		for(int i = 0; i < myNumServiceQueues; i++)
 		{
-			myAverageServiceTime = myAverageServiceTime + myServiceQueues[i].averageServiceTime();
+			myAverageServiceTime += myServiceQueues[i].averageServiceTime();
 		}
 		return myAverageServiceTime / myNumServiceQueues;
 	}
@@ -161,14 +165,82 @@ public class ServiceQueueManager
 		
 		for(int i = 0; i < myNumServiceQueues; i++)
 		{
-			myAverageIdleTime = myAverageIdleTime + myServiceQueues[i].averageIdleTime();
+			myAverageIdleTime += myServiceQueues[i].averageIdleTime();
 		}
 		return myAverageIdleTime / myNumServiceQueues;
 	}
 	
-	public long timePassed()
+	public double timePassed()
 	{
-		return myPresentTime - myStartTime;
+		myPresentTime = System.currentTimeMillis();
+		return (myPresentTime - myStartTime) / 1000.0;
+	}
+	
+	public int totalCustomerServiceTime()
+	{
+		myTotalCustomerServiceTime = 0;
+			
+//		for(int i = 0; i < myNumServiceQueues; i++)
+//		{
+//			for(int j = 0; j < myServiceQueues[i].size(); j++)
+//			{
+//				myTotalCustomerServiceTime += myServiceQueues[i].get(j).getServiceTime();
+//			}
+//		}
+		
+		for(int i = 0; i < myNumServiceQueues; i++)
+		{
+			myTotalCustomerServiceTime += myServiceQueues[i].totalCustomerServiceTime();
+		}
+		
+		return myTotalCustomerServiceTime;
+	}
+	
+	public int totalCustomerWaitTime()
+	{
+		myTotalCustomerWaitTime = 0;
+		
+//		for(int i = 0; i < myNumServiceQueues; i++)
+//		{
+//			for(int j = 0; j < myServiceQueues[i].size(); j++)
+//			{
+//				myTotalCustomerWaitTime += myServiceQueues[i].get(j).getWaitTime();
+//			}
+//		}
+		
+		for(int i = 0; i < myNumServiceQueues; i++)
+		{
+			myTotalCustomerWaitTime += myServiceQueues[i].totalCustomerWaitTime();
+		}
+		
+		return myTotalCustomerWaitTime;
+	}
+	
+	public float averageCustomerServiceTime()
+	{
+		myAverageCustomerServiceTime = 0;
+		
+//		System.out.println("totalCustomerServiceTime: " + myTotalCustomerServiceTime);
+//		System.out.println("totalServedSoFar: " + totalServedSoFar());
+		
+		if(totalServedSoFar() > 0)
+		{
+			myAverageCustomerServiceTime += (totalCustomerServiceTime() / totalServedSoFar());
+		}		
+		
+		return myAverageCustomerServiceTime;
+	}
+	
+	public float averageCustomerWaitTime()
+	{
+		myAverageCustomerWaitTime = 0;
+		
+		if(totalServedSoFar() > 0)
+		{
+			myAverageCustomerWaitTime += (myTotalCustomerWaitTime / totalServedSoFar());
+		}
+		
+		return myAverageCustomerWaitTime;
 	}
 	
 	public void setSuspended(boolean b)
@@ -229,5 +301,15 @@ public class ServiceQueueManager
 		{
 			myCashiers[i].setServiceTime(num);
 		}
+	}
+	
+	public Cashier getCashier(int num)
+	{
+		return myCashiers[num];
+	}
+	
+	public void setStartTime(long num)
+	{
+		myStartTime = num;
 	}
 }

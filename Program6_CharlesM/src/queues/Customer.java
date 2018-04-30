@@ -32,7 +32,7 @@ public class Customer
 	private final Image TOP_HAT_PERSON = Toolkit.getDefaultToolkit().getImage("images/TopHat(Transparent).png");
 	private final ImageIcon SCALED_TOP_HAT_PERSON = new ImageIcon(TOP_HAT_PERSON.getScaledInstance(53, 118, Image.SCALE_SMOOTH)); //53, 128
 	private final Image MANAGER_MOM = Toolkit.getDefaultToolkit().getImage("images/ManagerMom(Transparent).png");
-	private final ImageIcon SCALED_MANAGER_MOM = new ImageIcon(MANAGER_MOM.getScaledInstance(50, 100, Image.SCALE_SMOOTH)); //
+	private final ImageIcon SCALED_MANAGER_MOM = new ImageIcon(MANAGER_MOM.getScaledInstance(60, 110, Image.SCALE_SMOOTH)); //
 	private ImageIcon[] images = new ImageIcon[5];
 	
 	private long myServiceTime;
@@ -48,6 +48,8 @@ public class Customer
 		myEntryTime = System.currentTimeMillis();
 		myImage = setCustomerImage();
 		mySize = getSize();
+		myServiceTime = 0;
+		myWaitTime = 0;
 		
 		if(myImage.equals(SCALED_MANAGER_MOM))
 		{
@@ -86,12 +88,12 @@ public class Customer
 	
 	public String toString()
 	{
-		String customer;
-		customer = "Customer:" + "\n";
-		customer = customer + "Entry Time: " + myEntryTime + "\n";
-		customer = customer + "Wait Time: " + myWaitTime + "\n";
-		customer = customer + "Service Time: " + myServiceTime + "\n";
-		customer = customer + "Image: " + myImage.getIconHeight();
+		String customer = "Customer:" + "\n";
+		customer += "Entry Time: " + myEntryTime + "\n";
+		customer += "Wait Time: " + myWaitTime + "\n";
+		customer += "Service Time: " + myServiceTime + "\n";
+		customer += "Image: " + myImage.getIconHeight() + "\n";
+		customer += "Is Mom: " + getIsMom();
 		
 		return customer;
 	}

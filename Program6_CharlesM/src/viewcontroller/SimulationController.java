@@ -1,17 +1,11 @@
 package viewcontroller;
 
 import java.awt.Dimension;
-import java.util.Vector;
-
-import javax.swing.ImageIcon;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 import queues.Customer;
-import queues.CustomerGenerator;
-import queues.Name;
-import queues.ServiceQueue;
 import queues.ServiceQueueManager;
-import queues.UniformCashier;
-import queues.UniformCustomerGenerator;
 
 /**
  * Cashier should say "is there anybody in my queue (can do with exceptions or with checking the size)" if there is nobody in the queue, cashier sleeps
@@ -28,27 +22,25 @@ import queues.UniformCustomerGenerator;
 
 public class SimulationController implements Runnable
 {
+	private int myNumCashiers;
+	private int myGenerationTime;
+	private int myServiceTime;
+	private int myNumCustomers;
+	private long myPrePause;
+	private double myPostPause;
 	private SimulationView myView;
 	private ServiceQueueManager myServiceQueueManager;
-	private ServiceQueue myServiceQueue;
-	private int myQueue;
-	private int myCounter;
 	private boolean mySuspended;
 	private boolean myStarted;
 	private Thread myThread;
-	
-	private int myOriginalGenerationTime;
 	
 	
 	public SimulationController()
 	{
 		myView = new SimulationView(this);
-		myServiceQueue = new ServiceQueue();
 		myThread = new Thread(this);
 		mySuspended = false;
 		myStarted = false;
-		myCounter = 0;
-		myQueue = 0;
 	}
 	
 	public static void main(String args[])
@@ -62,13 +54,19 @@ public class SimulationController implements Runnable
 		{
 			synchronized(this)
 			{
-				myOriginalGenerationTime = myView.getGenerationTime();
-				
-				myServiceQueueManager = new ServiceQueueManager(myView.getComboBoxNumber(), 
-						myView.getGenerationTime(),
-						myView.getServiceTime(),
-						myView.getNumCustomers());
-				
+				myGenerationTime = myView.getGenerationTime();
+				myNumCustomers = myView.getNumCustomers();
+				myNumCashiers = myView.getComboBoxNumber();
+				myServiceTime = myView.getServiceTime();				
+//				myServiceQueueManager = new ServiceQueueManager(myView.getComboBoxNumber(), 
+//						myView.getGenerationTime(),
+//						myView.getServiceTime(),
+//						myView.getNumCustomers());
+				myServiceQueueManager = new ServiceQueueManager(myNumCashiers,
+						myGenerationTime,
+						myServiceTime,
+						myNumCustomers);
+//				
 				this.updateView();
 			}
 		}
@@ -91,7 +89,7 @@ public class SimulationController implements Runnable
 		{
 			String error;
 			error = e.toString();
-			System.out.println(error + " in SimulationController.");
+			System.out.println(error);
 		}
 	}
 	
@@ -102,7 +100,9 @@ public class SimulationController implements Runnable
 //	{
 //		myView.enable();	
 //	}
-		while(true)
+//		while(true)
+//		{
+		do
 		{
 			this.waitWhileSuspended();
 			
@@ -118,9 +118,9 @@ public class SimulationController implements Runnable
 					myServiceQueueManager.setServiceTime((float)(myView.getSliderValue() / 100.0));
 				}
 				
-				Thread.sleep(100);
+				Thread.sleep(50);
 				
-				for(int i = 0; i < myView.getComboBoxNumber(); i++)
+				for(int i = 0; i < myNumCashiers; i++)
 				{
 					this.displayCustomers(i);
 				}
@@ -136,14 +136,22 @@ public class SimulationController implements Runnable
 				System.out.println(error);
 			}
 		}
+		while(myServiceQueueManager.totalServedSoFar() != myNumCustomers);
+		
+		for(int i = 0; i < myNumCashiers; i++)
+		{
+			myServiceQueueManager.getCashier(i).setContinue(false);
+		}
+//		}
 	}
 	
 	private void waitWhileSuspended() throws InterruptedException
 	{
 		while(mySuspended)
 		{
-			System.out.println("Thread in Controller paused.");
+			myPrePause = System.currentTimeMillis();
 			this.wait();
+			myPostPause = myPostPause +  (System.currentTimeMillis() - myPrePause);
 		}
 	}
 	
@@ -154,21 +162,30 @@ public class SimulationController implements Runnable
 		
 		myView.setNumServedText(myServiceQueueManager.totalServedSoFar(queue), queue);		
 		
-	
-//What is the difference between idle time and wait time (for a customer)		
+		
+//Have to stop idle time once program is done, also nothing in customer stats works
+		
+//		if(myServiceQueueManager.totalServedSoFar() != myView.getNumCustomers())
+//		{
+	//	System.out.println(myServiceQueueManager.timePassed() - myPostPause);
 		String text = "Total Served: " + myServiceQueueManager.totalServedSoFar() + "\n";
-		text += "Total Service Time: " + myServiceQueueManager.totalServiceTime() + "\n";
-		text += "Avg Service Time: " + myServiceQueueManager.averageServiceTime() + "\n";
-		text += "Total Wait Time: " + myServiceQueueManager.totalWaitTime() + "\n";
-		text += "Avg Wait Time: " + myServiceQueueManager.averageWaitTime() + "\n";
-		text += "Total Idle Time: " + myServiceQueueManager.totalIdleTime() + "\n";
-		text += "Avg Idle Time: " + myServiceQueueManager.averageIdleTime() + "\n";
+		text += "Total Time Passed: " + determineTime() + "\n";
+//		text += "Total Customer Service Time: " + myServiceQueueManager.totalServiceTime() + "\n";
+//		text += "Avg Customer Service Time: " + myServiceQueueManager.averageServiceTime() + "\n";
+//		text += "Total Customer Wait Time: " + myServiceQueueManager.totalWaitTime() + "\n";
+//		text += "Avg Customer Wait Time: " + myServiceQueueManager.averageWaitTime() + "\n";
+		text += "Total Service Time: " + "\n" + myServiceQueueManager.totalCustomerServiceTime() + " ms" +  "\n";
+		text += "Avg Service Time: " + "\n" + myServiceQueueManager.averageCustomerServiceTime() + " ms" + "\n";
+		text += "Total Wait Time: " + "\n" + myServiceQueueManager.totalCustomerWaitTime() + " ms" + "\n";
+		text += "Avg Wait Time: " + "\n" + myServiceQueueManager.averageCustomerWaitTime() + " ms" + "\n";
+//		text += "Total Idle Time: " + myServiceQueueManager.totalIdleTime() + "\n";
+//		text += "Avg Idle Time: " + myServiceQueueManager.averageIdleTime() + "\n";
 		myView.setOverallStatsText(text);
+//		}
 	}
 	
 	public void startPause()
 	{
-		System.out.println("Start button pushed");
 		if(myStarted)
 		{
 			myView.changeStartPause();
@@ -214,14 +231,17 @@ public class SimulationController implements Runnable
 		{
 			myView.setCashierStatsText("This cashier is inactive.");
 		}
-		else
-		{
+//		else if(myNumCustomers > myServiceQueueManager.totalServedSoFar())
+//		{
+		//add milliseconds to String
 			String text = "Name: " + myServiceQueueManager.getName(num) + "\n";
 			text += "Total Served: " + myServiceQueueManager.totalServedSoFar(num) + "\n";
-			text += "Avg Idle Time: " + myServiceQueueManager.getServiceQueue(num).averageIdleTime() + "\n";
-			text += "Avg Service Time: " + myServiceQueueManager.getServiceQueue(num).averageServiceTime() + "\n";
+			text += "Total ServiceTime: " + "\n" + myServiceQueueManager.getServiceQueue(num).getTotalServiceTime() + " ms" + "\n";
+			text += "Avg Service Time: " + "\n" + myServiceQueueManager.getServiceQueue(num).averageServiceTime() + " ms" + "\n";
+			text += "Total Idle Time: " + "\n" + myServiceQueueManager.getServiceQueue(num).getTotalIdleTime() + " ms" + "\n";
+			text += "Avg Idle Time: " + "\n" + myServiceQueueManager.getServiceQueue(num).averageIdleTime() + " ms" + "\n";
 			myView.setCashierStatsText(text);
-		}		
+//		}
 	}
 	
 	public Dimension getCustomerSize()
@@ -237,5 +257,15 @@ public class SimulationController implements Runnable
 	public int getQueueSize(int queue)
 	{
 		return myServiceQueueManager.getNumInQueue(queue);
+	}
+	
+	public String determineTime()
+	{
+		DecimalFormat format = new DecimalFormat("#.###");
+		format.setRoundingMode(RoundingMode.HALF_UP);
+		String time = format.format(myServiceQueueManager.timePassed() - (myPostPause / 1000.0));
+		time += "s";
+		
+		return time;
 	}
 }

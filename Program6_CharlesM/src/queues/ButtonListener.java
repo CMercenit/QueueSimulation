@@ -80,8 +80,7 @@ public class ButtonListener extends MouseAdapter
         {
         	String error;
         	error = exception.toString();
-        	System.out.println(error);
-//          System.out.println("InvocationTargetException");
+        	//System.out.println(error);
         }
         catch(IllegalAccessException exception)
         {

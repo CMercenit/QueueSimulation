@@ -8,6 +8,10 @@ public class ServiceQueue extends Queue
 	private int myTotalServiceTime;
 	private int myTotalIdleTime;
 	private int myTotalTime;
+	private int myTotalCustomerServiceTime;
+	private int myTotalCustomerWaitTime;
+	private float myAverageCustomerServiceTime;
+	private float myAverageCustomerWaitTime;
 	private Name myName;
 	
 	public ServiceQueue()
@@ -50,7 +54,7 @@ public class ServiceQueue extends Queue
 		return served;
 	}
 	
-	public int averageWaitTime()
+	public float averageWaitTime()
 	{
 		if(myNumCustomersServedSoFar == 0)
 		{
@@ -62,7 +66,7 @@ public class ServiceQueue extends Queue
 		}
 	}
 	
-	public int averageServiceTime()
+	public float averageServiceTime()
 	{
 		if(myNumCustomersServedSoFar == 0)
 		{
@@ -74,7 +78,7 @@ public class ServiceQueue extends Queue
 		}
 	}
 	
-	public int averageIdleTime()
+	public float averageIdleTime()
 	{
 		if(myNumCustomersServedSoFar == 0)
 		{
@@ -83,6 +87,60 @@ public class ServiceQueue extends Queue
 		else
 		{
 			return myTotalIdleTime / myNumCustomersServedSoFar;
+		}
+	}
+	
+	public void addToCustomerServiceTime(long num)
+	{
+		myTotalCustomerServiceTime += num;
+	}
+	
+	public void addToCustomerWaitTime(long num)
+	{
+		myTotalCustomerWaitTime += num;
+	}
+	
+	public int totalCustomerServiceTime()
+	{
+		return myTotalCustomerServiceTime;
+	}
+	
+	public int totalCustomerWaitTime()
+	{
+		return myTotalCustomerWaitTime;
+	}
+	
+	public float averageCustomerServiceTime()
+	{
+		myAverageCustomerServiceTime = 0;
+		
+		if(myNumCustomersServedSoFar == 0)
+		{
+			return myTotalCustomerServiceTime;
+		}
+		else
+		{
+			myAverageCustomerServiceTime =
+					myAverageCustomerServiceTime / myNumCustomersServedSoFar;
+			
+			return myAverageCustomerServiceTime;
+		}
+	}
+	
+	public float averageCustomerWaitTime()
+	{
+		myAverageCustomerWaitTime = 0;
+		
+		if(myNumCustomersServedSoFar == 0)
+		{
+			return myTotalCustomerWaitTime;
+		}
+		else
+		{
+			myAverageCustomerWaitTime =
+					myAverageCustomerWaitTime / myNumCustomersServedSoFar;
+			
+			return myAverageCustomerWaitTime;
 		}
 	}
 	

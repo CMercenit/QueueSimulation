@@ -17,7 +17,10 @@ import queues.ServiceQueue;
  * TODO:
  * Should I make individual methods for each thing in the view?
  * (BONUS)
- * Add enable/disable text fields
+ * Scale mom better(too small), also doesn't display manager properly
+ * 
+ * email teacher tomorrow, say I think I broke bitbucket, want to meet up on Monday so he can look everything over and make sure it's all good,
+ * 	ask for help fixing manager, ask for difference between idle time and wait time, ask if things in the view should be in different methods
  * 
  * 
  * 
@@ -134,7 +137,7 @@ public class SimulationView
 //		myStats1.setLocation(8, 50);
 		myStats1.setLocation(8, 95);
 		myStats1.setEditable(false);
-		myStats1.setFont(new Font("Font 1", Font.BOLD, 20));
+		myStats1.setFont(new Font("Font 1", Font.BOLD, 19));
 		myStatsPanel.add(myStats1);
 		
 		myStats2 = new JTextArea();
@@ -146,10 +149,10 @@ public class SimulationView
 //		myStats2.setLocation(8, 375);
 		myStats2.setLocation(8, 400);
 		myStats2.setEditable(false);
-		myStats2.setFont(new Font("Font 1", Font.BOLD, 20));
+		myStats2.setFont(new Font("Font 1", Font.BOLD, 19));
 		myStatsPanel.add(myStats2);
 		
-		myHeading1 = new JTextField("Overall Stats: ");
+		myHeading1 = new JTextField("Customer Stats: ");
 		myHeading1.setLayout(null);
 		myHeading1.setSize(115, 25);
 		myHeading1.setBackground(new Color(225, 225, 225));
@@ -529,7 +532,7 @@ public class SimulationView
 		{
 			Customer customer = customers.get(customers.size() - i);
 			
-			if(customer.getIsMom())
+			if(customers.get(customers.size() - 1).getIsMom() && customers.size() > 0)
 			{
 				myCashiers[queue].setIcon(SCALED_CASHIER_MANAGER);
 			}
