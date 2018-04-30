@@ -3,8 +3,6 @@ package viewcontroller;
 import java.awt.*;
 import java.lang.reflect.Method;
 import java.util.Hashtable;
-import java.util.Vector;
-
 import javax.swing.*;
 
 import queues.ButtonListener;
@@ -13,29 +11,17 @@ import queues.ServiceQueue;
 
 /**
  * 
- * 
- * TODO:
- * Should I make individual methods for each thing in the view?
- * (BONUS)
- * Scale mom better(too small), also doesn't display manager properly
- * 
- * email teacher tomorrow, say I think I broke bitbucket, want to meet up on Monday so he can look everything over and make sure it's all good,
- * 	ask for help fixing manager, ask for difference between idle time and wait time, ask if things in the view should be in different methods
- * 
- * 
- * 
  * @author Charles Mercenit
- *
  */
 
 public class SimulationView
 {
 	private final String myBackgroundImage = "images/background.jpg";
 	
-	private final Image CASHIER_CLOSED = Toolkit.getDefaultToolkit().getImage("images/EmptyDesk(Transparent).png"); //145 x 70
+	private final Image CASHIER_CLOSED = Toolkit.getDefaultToolkit().getImage("images/EmptyDesk(Transparent).png");
 	private final ImageIcon SCALED_CASHIER_CLOSED = new ImageIcon(CASHIER_CLOSED.getScaledInstance(124, 60, Image.SCALE_SMOOTH));
-	private final Image CASHIER_OPEN = Toolkit.getDefaultToolkit().getImage("images/Cashier(Transparent).png"); //160 x 155
-	private final ImageIcon SCALED_CASHIER_OPEN = new ImageIcon(CASHIER_OPEN.getScaledInstance(127, 123, Image.SCALE_SMOOTH)); //137 x 133
+	private final Image CASHIER_OPEN = Toolkit.getDefaultToolkit().getImage("images/Cashier(Transparent).png");
+	private final ImageIcon SCALED_CASHIER_OPEN = new ImageIcon(CASHIER_OPEN.getScaledInstance(127, 123, Image.SCALE_SMOOTH));
 	private final Image CASHIER_MANAGER = Toolkit.getDefaultToolkit().getImage("images/CashierManager(Transparent).png");
 	private final ImageIcon SCALED_CASHIER_MANAGER = new ImageIcon(CASHIER_MANAGER.getScaledInstance(125, 125, Image.SCALE_SMOOTH));
 	
@@ -104,17 +90,9 @@ public class SimulationView
 			for(int j = 0; j < MAX_PEOPLE_IN_LINE; j++)
 			{
 				myCustomers[i][j] = new JLabel();
-			//	myCustomers[i][j].setSize();
-			//	myCustomers[i][j].setLocation(150 + (*i), 500 - (50*j));
-			//	mySimulationPanel.add(myCustomers[i][j]);
 			}
 		}
-		
-		
-		
-		
-		
-		
+				
 		myStatsPanel = new JPanel();
 		myStatsPanel.setLayout(null);
 		myStatsPanel.setSize(290, 1000);
@@ -124,7 +102,6 @@ public class SimulationView
 		myStartPause = new JButton("Start");
 		myStartPause.setLayout(null);
 		myStartPause.setSize(150, 25);
-//		myStartPause.setLocation(70, 825);
 		myStartPause.setLocation(70, 835);
 		myStatsPanel.add(myStartPause);
 
@@ -134,7 +111,6 @@ public class SimulationView
 		myStats1.setLineWrap(true);
 		myStats1.setBorder(BorderFactory.createLoweredBevelBorder());
 		myStats1.setBackground(Color.WHITE);
-//		myStats1.setLocation(8, 50);
 		myStats1.setLocation(8, 95);
 		myStats1.setEditable(false);
 		myStats1.setFont(new Font("Font 1", Font.BOLD, 19));
@@ -146,7 +122,6 @@ public class SimulationView
 		myStats2.setLineWrap(true);
 		myStats2.setBorder(BorderFactory.createLoweredBevelBorder());
 		myStats2.setBackground(Color.WHITE);
-//		myStats2.setLocation(8, 375);
 		myStats2.setLocation(8, 400);
 		myStats2.setEditable(false);
 		myStats2.setFont(new Font("Font 1", Font.BOLD, 19));
@@ -158,7 +133,6 @@ public class SimulationView
 		myHeading1.setBackground(new Color(225, 225, 225));
 		myHeading1.setBorder(BorderFactory.createEmptyBorder());
 		myHeading1.setEditable(false);
-//		myHeading1.setLocation(8, 25);
 		myHeading1.setLocation(8, 70);
 		myHeading1.setFont(myFont);
 		myStatsPanel.add(myHeading1);
@@ -169,7 +143,6 @@ public class SimulationView
 		myHeading2.setBackground(new Color(225, 225, 225));
 		myHeading2.setBorder(BorderFactory.createEmptyBorder());
 		myHeading2.setEditable(false);
-//		myHeading2.setLocation(8, 350);
 		myHeading2.setLocation(8, 375);
 		myHeading2.setFont(myFont);
 		myStatsPanel.add(myHeading2);
@@ -180,7 +153,6 @@ public class SimulationView
 		myHeading3.setBackground(new Color(225, 225, 225));
 		myHeading3.setBorder(BorderFactory.createEmptyBorder());
 		myHeading3.setEditable(false);
-//		myHeading3.setLocation(8, 675);
 		myHeading3.setLocation(8, 685);
 		myHeading3.setFont(myParamFont);
 		myStatsPanel.add(myHeading3);
@@ -191,7 +163,6 @@ public class SimulationView
 		myGenerationTime.setBackground(Color.WHITE);
 		myGenerationTime.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
 		myGenerationTime.setEditable(true);
-//		myGenerationTime.setLocation(210, 675);
 		myGenerationTime.setLocation(210, 685);
 		myStatsPanel.add(myGenerationTime);
 		
@@ -201,7 +172,6 @@ public class SimulationView
 		myHeading4.setBackground(new Color(225, 225, 225));
 		myHeading4.setBorder(BorderFactory.createEmptyBorder());
 		myHeading4.setEditable(false);
-//		myHeading4.setLocation(8, 710);
 		myHeading4.setLocation(8, 720);
 		myHeading4.setFont(myParamFont);
 		myStatsPanel.add(myHeading4);
@@ -212,7 +182,6 @@ public class SimulationView
 		myNumCustomers.setBackground(Color.WHITE);
 		myNumCustomers.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
 		myNumCustomers.setEditable(true);
-//		myNumCustomers.setLocation(210, 710);
 		myNumCustomers.setLocation(210, 720);
 		myStatsPanel.add(myNumCustomers);
 		
@@ -222,7 +191,6 @@ public class SimulationView
 		myHeading5.setBackground(new Color(225, 225, 225));
 		myHeading5.setBorder(BorderFactory.createEmptyBorder());
 		myHeading5.setEditable(false);
-//		myHeading5.setLocation(8, 745);
 		myHeading5.setLocation(8, 755);
 		myHeading5.setFont(myParamFont);
 		myStatsPanel.add(myHeading5);
@@ -238,7 +206,6 @@ public class SimulationView
 		myNumCashiers.setBackground(Color.WHITE);
 		myNumCashiers.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
 		myNumCashiers.setEditable(false);
-//		myNumCashiers.setLocation(210, 745);
 		myNumCashiers.setLocation(210, 755);
 		myStatsPanel.add(myNumCashiers);		
 		
@@ -248,7 +215,6 @@ public class SimulationView
 		myHeading6.setBackground(new Color(225, 225, 225));
 		myHeading6.setBorder(BorderFactory.createEmptyBorder());
 		myHeading6.setEditable(false);
-//		myHeading6.setLocation(8, 780);
 		myHeading6.setLocation(8, 790);
 		myHeading6.setFont(myParamFont);
 		myStatsPanel.add(myHeading6);
@@ -259,7 +225,6 @@ public class SimulationView
 		myServiceTime.setBackground(Color.WHITE);
 		myServiceTime.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
 		myServiceTime.setEditable(true);
-//		myServiceTime.setLocation(210, 780);
 		myServiceTime.setLocation(210, 790);
 		myStatsPanel.add(myServiceTime);
 		
@@ -465,10 +430,6 @@ public class SimulationView
 	
 	public void setOverflowText(int text, int queue)
 	{
-//		for(int i = 0; i < getComboBoxNumber(); i++)
-//		{
-//			myOverflow[i].setText("+" + text);
-//		}
 		myOverflow[queue].setText("+" + text);
 	}
 	
@@ -478,15 +439,7 @@ public class SimulationView
 	}
 	
 	public void setCustomersInLine(int queue, int num, ServiceQueue customers)
-	{//queue = line that i'm updating, num = amount of customers in that line, MAX_PEOPLE_IN_LINE = 11
-		
-
-//Doesn't place the customers properly using setCustomerLocation method
-//Need to call this method after generating customer instead of every 100 ms
-
-//		System.out.println("queue: " + queue);
-//		System.out.println("num: " + num);
-		
+	{
 		int position;
 		if(num == 0)
 		{
@@ -498,26 +451,8 @@ public class SimulationView
 		}
 		else
 		{
-			//This is why the last image keeps changing with the Customer customer = customers.get(i) loop
 			position = MAX_PEOPLE_IN_LINE - 1;
 		}
-		
-		
-//		This is for the vector of images
-//		for(ImageIcon i: images)
-//		{
-//			
-//		}
-				
-		
-		
- //		Reason why previous images aren't deleted is position keeps going up, have to go through all of myCustomers[][] and replace all images
- 
- 
-// 		for(int i = 0; i < myCustomers[queue].length; i++)
-// 		{
-// 			
-// 		}
 		
 		for(int i = (MAX_PEOPLE_IN_LINE - 1); i > position; i--)
 		{
@@ -580,86 +515,6 @@ public class SimulationView
 				myCustomers[queue][num].setLocation(614, (627 - (60*num)));
 				break;
 		}
-		
-		
-//		boolean b = true;
-//		if(queue == 0)
-//		{
-//			if(b)
-//			{
-//				myCustomers[queue][num].setLocation(54, (627 - (60*num)));
-//				b = !b;
-//			}
-//			else
-//			{
-//				myCustomers[queue][num].setLocation(36, (627 - (60*num)));
-//				b = !b;
-//			}
-//		}
-//		else if(queue == 1)
-//		{
-//			if(b)
-//			{
-//				myCustomers[queue][num].setLocation(194, (627 - (60*num)));
-//				b = !b;
-//			}
-//			else
-//			{
-//				myCustomers[queue][num].setLocation(176, (627 - (60*num)));
-//			}
-//		}
-//		else if(queue == 2)
-//		{
-//			if(b)
-//			{
-//				myCustomers[queue][num].setLocation(334, (627 - (60*num)));
-//				b = !b;
-//			}
-//			else
-//			{
-//				myCustomers[queue][num].setLocation(316, (627 - (60*num)));
-//			}
-//		}
-//		else if(queue == 3)
-//		{
-//			if(b)
-//			{
-//				myCustomers[queue][num].setLocation(474, (627 - (60*num)));
-//				b = !b;
-//			}
-//			else
-//			{
-//				myCustomers[queue][num].setLocation(456, (627 - (60*num)));
-//			}
-//		}
-//		else if(queue == 4)
-//		{
-//			if(b)
-//			{
-//				myCustomers[queue][num].setLocation(614, (627 - (60*num)));
-//				b = !b;
-//			}
-//			else
-//			{
-//				myCustomers[queue][num].setLocation(596, (627 - (60*num)));
-//			}
-//		}
-	}
-	
-	public void disable()
-	{
-		myGenerationTime.setEnabled(false);
-		myServiceTime.setEnabled(false);
-		myNumCustomers.setEnabled(false);
-		myNumCashiers.setEnabled(false);
-	}
-	
-	public void enable()
-	{
-		myGenerationTime.setEnabled(true);
-		myServiceTime.setEnabled(true);
-		myNumCustomers.setEnabled(true);
-		myNumCashiers.setEnabled(true);
 	}
 	
 	public JLabel[] getCashiers()

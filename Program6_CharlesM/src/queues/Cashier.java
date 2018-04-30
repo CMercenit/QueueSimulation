@@ -1,17 +1,14 @@
 package queues;
 
 /**
- * Customers have an idle time, wait time, and service time.
- * Cashiers have total served, average service time, and average idle time.
- * 
- * 
+ *  
  * @author Charles Mercenit
- *
  */
 public abstract class Cashier implements Runnable
 {
 	private int myMaxServiceTime;
 	private int myNumServed;
+	private int myOriginalMaxServiceTime;
 	private long myServiceTime;
 	private ServiceQueue myServiceQueue;
 	private Customer myCustomer;
@@ -19,51 +16,26 @@ public abstract class Cashier implements Runnable
 	private boolean myContinue;
 	private Thread myThread;
 	
-	private int myOriginalMaxServiceTime;
-	
 	public abstract int generateServiceTime();
 	
 	public Cashier(int maxServiceTime, ServiceQueue serviceQueue)
 	{
 		myMaxServiceTime = maxServiceTime;
+		myOriginalMaxServiceTime = maxServiceTime;
 		myServiceQueue = serviceQueue;
 		myServiceTime = 0;
 		mySuspended = false;
 		myContinue = true;
 		myThread = new Thread(this);
-		
-		myOriginalMaxServiceTime = maxServiceTime;
 	}
 	
 	public int serveCustomer()
 	{
-	/*
-		System.out.println("Customer about to be served.");
-		Customer served = myServiceQueue.serveCustomer();
-		long waitTime = myCustomer.getEntryTime() - System.currentTimeMillis();
-		myCustomer.setWaitTime(waitTime);
-	
-		myServiceTime = (long)generateServiceTime();
-		myCustomer.setServiceTime(myServiceTime);
-	
-		myNumServed++;
-		System.out.println("Customer served");
-		myCustomer = myServiceQueue.getCustomer();
-		System.out.println(served.toString());
-	
-		return myNumServed;
-	*/
-		
-//		myCustomer = myServiceQueue.serveCustomer();
-//		myCustomer = myServiceQueue.peek();
 		myCustomer = myServiceQueue.serveCustomer();
-//		myCustomer.addToWaitTime(System.currentTimeMillis() - myCustomer.getEntryTime());
 		myServiceQueue.addToCustomerWaitTime(System.currentTimeMillis() - myCustomer.getEntryTime());
 		myServiceTime = (long)generateServiceTime();
-//		myCustomer.addToServiceTime(myServiceTime);
 		myServiceQueue.addToCustomerServiceTime(myServiceTime);
 		myServiceQueue.addToServiceTime(myServiceTime);
-//		myServiceQueue.serveCustomer();
 		myNumServed++;
 		
 		return myNumServed;
@@ -75,7 +47,6 @@ public abstract class Cashier implements Runnable
 		{
 			synchronized(this)
 			{
-//				System.out.println("Cashier running.");
 				this.serveCustomers();
 			}
 		}
@@ -91,7 +62,6 @@ public abstract class Cashier implements Runnable
 	{
 		try
 		{
-//			System.out.println("Cashier started");
 			myThread.start();
 		}
 		catch(IllegalThreadStateException e)
@@ -119,8 +89,6 @@ public abstract class Cashier implements Runnable
 	
 	public void serveCustomers() throws InterruptedException
 	{
-//		while(true)
-//		{
 		do
 		{
 			this.waitWhileSuspended();
@@ -145,8 +113,7 @@ public abstract class Cashier implements Runnable
 				System.out.println(error);
 			}
 		}
-		while(myContinue);
-//		}		
+		while(myContinue);	
 	}
 	
 	public synchronized void resume()

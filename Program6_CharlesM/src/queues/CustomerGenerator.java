@@ -5,20 +5,17 @@ import java.awt.Dimension;
 /**
  *  
  * @author Charles Mercenit
- *
  */
 public abstract class CustomerGenerator implements Runnable
 {
 	private int myMaxTimeBetweenCustomers;
-	private ServiceQueueManager myServiceQueueManager;
+	private int myOriginalMaxTimeBetweenCustomers;
 	private int myMaxNumCustomers;
 	private int customers;
+	private ServiceQueueManager myServiceQueueManager;
 	private Customer myCustomer;
 	private boolean mySuspended;
-	private boolean myGenerated;
 	private Thread myThread;
-	
-	private int myOriginalMaxTimeBetweenCustomers;
 	
 	public abstract int generateTimeBetweenCustomers();
 	
@@ -29,37 +26,22 @@ public abstract class CustomerGenerator implements Runnable
 		myMaxTimeBetweenCustomers = maxTimeBetweenCustomers;
 		myMaxNumCustomers = maxNumCustomers;
 		myServiceQueueManager = serviceQueueManager;
+		myOriginalMaxTimeBetweenCustomers = maxTimeBetweenCustomers;
 		customers = 0;
 		mySuspended = false;
-		myGenerated = false;
 		myThread = new Thread(this);
-		
-		myOriginalMaxTimeBetweenCustomers = maxTimeBetweenCustomers;
 	}
 	
 	public Customer generateCustomer()
 	{
-//		System.out.println("customer generated");
 		myCustomer = new Customer();
 		myServiceQueueManager.enqueue(myCustomer);
-		myGenerated = true;
+		
 		return myCustomer;
 	}
 	
 	public void run()
 	{
-		//put in a loop that continues until max num customers is reached
-		//serviceQueueManager could be model instead of simulationModel
-		//each cashier needs suspend and resume like in controller, same with customer generator
-		//when suspend method happens (button is clicked), go to each class that needs to be suspended and get them to call their suspend method
-		//Cashier[] cashiers = myModel.getCashiers();
-		//for each cashier:
-		//	cashier.suspend()
-		//CustomerGenerator gen = myModel.getCustomerGenerator();
-		//gen.suspend();
-		//all this happens before mySuspended = true;
-		//in resume, do the opposite.
-		
 		try
 		{
 			synchronized(this)
@@ -73,7 +55,6 @@ public abstract class CustomerGenerator implements Runnable
 			error = e.toString();
 			System.out.println(error);
 		}
-		
 	}
 	
 	public void start()
@@ -98,7 +79,6 @@ public abstract class CustomerGenerator implements Runnable
 	
 	public void suspend()
 	{
-		System.out.println("Thread in CustomerGenerator paused.");
 		mySuspended = true;
 	}
 	
@@ -129,7 +109,6 @@ public abstract class CustomerGenerator implements Runnable
 				System.out.println(error);
 			}
 		}
-		//Once while loop is done, boolean isDone sent to Controller to tell it to enable the text fields
 	}
 	
 	public int getMaxNumCustomers()
@@ -160,11 +139,6 @@ public abstract class CustomerGenerator implements Runnable
 	public Dimension getCustomerSize()
 	{
 		return myCustomer.getSize();
-	}
-	
-	public boolean isGenerated()
-	{
-		return myGenerated;
 	}
 	
 	public void setGenerationTime(float num)

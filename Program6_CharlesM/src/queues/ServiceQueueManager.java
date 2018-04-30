@@ -1,12 +1,9 @@
 package queues;
 
 import java.awt.Dimension;
-import java.util.Vector;
 
 public class ServiceQueueManager
 {
-	public final int MAX_NUM_QUEUES = 5;
-	
 	private int myNumServiceQueues;
 	private int myTotalWaitTime;
 	private int myTotalServiceTime;
@@ -34,14 +31,12 @@ public class ServiceQueueManager
 		myCashiers = new UniformCashier[numQueues];
 		
 		myCustomerGenerator = new UniformCustomerGenerator(maxTimeBetweenCustomers, maxNumCustomers, this);
-//		System.out.println("myCustomerGenerator started.");
 		myCustomerGenerator.start();
 		
 		for(int i = 0; i < numQueues; i++)
 		{
 			myServiceQueues[i] = new ServiceQueue();
 			myCashiers[i] = new UniformCashier(maxServiceTime, myServiceQueues[i]);
-//			System.out.println("myCashiers[" + i + "] started.");
 			myCashiers[i].start();
 		}
 	}
@@ -58,13 +53,11 @@ public class ServiceQueueManager
 	
 	public synchronized void resume()
 	{
-//		System.out.println("myCustomerGenerator resumed.");
 		myCustomerGenerator.setSuspended(mySuspended);
 		myCustomerGenerator.resume();
 		
 		for(int i = 0; i < myNumServiceQueues; i++)
 		{
-//			System.out.println("myCashiers[" + i + "] resumed.");
 			myCashiers[i].setSuspended(mySuspended);
 			myCashiers[i].resume();
 		}
@@ -179,14 +172,6 @@ public class ServiceQueueManager
 	public int totalCustomerServiceTime()
 	{
 		myTotalCustomerServiceTime = 0;
-			
-//		for(int i = 0; i < myNumServiceQueues; i++)
-//		{
-//			for(int j = 0; j < myServiceQueues[i].size(); j++)
-//			{
-//				myTotalCustomerServiceTime += myServiceQueues[i].get(j).getServiceTime();
-//			}
-//		}
 		
 		for(int i = 0; i < myNumServiceQueues; i++)
 		{
@@ -200,14 +185,6 @@ public class ServiceQueueManager
 	{
 		myTotalCustomerWaitTime = 0;
 		
-//		for(int i = 0; i < myNumServiceQueues; i++)
-//		{
-//			for(int j = 0; j < myServiceQueues[i].size(); j++)
-//			{
-//				myTotalCustomerWaitTime += myServiceQueues[i].get(j).getWaitTime();
-//			}
-//		}
-		
 		for(int i = 0; i < myNumServiceQueues; i++)
 		{
 			myTotalCustomerWaitTime += myServiceQueues[i].totalCustomerWaitTime();
@@ -219,9 +196,6 @@ public class ServiceQueueManager
 	public float averageCustomerServiceTime()
 	{
 		myAverageCustomerServiceTime = 0;
-		
-//		System.out.println("totalCustomerServiceTime: " + myTotalCustomerServiceTime);
-//		System.out.println("totalServedSoFar: " + totalServedSoFar());
 		
 		if(totalServedSoFar() > 0)
 		{
@@ -279,11 +253,6 @@ public class ServiceQueueManager
 		ServiceQueue queue = myServiceQueues[num];
 		return queue.size();
 	}
-	
-//	public Vector<Customer> getCustomers(int queue)
-//	{
-//		return myServiceQueues[queue].getCustomers();
-//	}
 	
 	public String getName(int queue)
 	{

@@ -8,16 +8,8 @@ import queues.Customer;
 import queues.ServiceQueueManager;
 
 /**
- * Cashier should say "is there anybody in my queue (can do with exceptions or with checking the size)" if there is nobody in the queue, cashier sleeps
- * 	for something like 5 ms and then try again, that 5 ms is added to idle time.
- * 
- * Every update in updateView should go to each queue,
- * get the icon for each customer in in the entire queue starting at 0 and going through the full thing
- * make sure that the view gets access to the full queue to do this, or in the 
- * 
  * 
  * @author Charles
- *
  */
 
 public class SimulationController implements Runnable
@@ -32,8 +24,7 @@ public class SimulationController implements Runnable
 	private ServiceQueueManager myServiceQueueManager;
 	private boolean mySuspended;
 	private boolean myStarted;
-	private Thread myThread;
-	
+	private Thread myThread;	
 	
 	public SimulationController()
 	{
@@ -57,16 +48,13 @@ public class SimulationController implements Runnable
 				myGenerationTime = myView.getGenerationTime();
 				myNumCustomers = myView.getNumCustomers();
 				myNumCashiers = myView.getComboBoxNumber();
-				myServiceTime = myView.getServiceTime();				
-//				myServiceQueueManager = new ServiceQueueManager(myView.getComboBoxNumber(), 
-//						myView.getGenerationTime(),
-//						myView.getServiceTime(),
-//						myView.getNumCustomers());
+				myServiceTime = myView.getServiceTime();
+				
 				myServiceQueueManager = new ServiceQueueManager(myNumCashiers,
 						myGenerationTime,
 						myServiceTime,
 						myNumCustomers);
-//				
+				
 				this.updateView();
 			}
 		}
@@ -94,14 +82,7 @@ public class SimulationController implements Runnable
 	}
 	
 	private void updateView() throws InterruptedException
-	{	
-//while(myNumCustomers < myView.getNumCustomers())
-//if(myNumCustomers == myView.getNumCustomers())
-//	{
-//		myView.enable();	
-//	}
-//		while(true)
-//		{
+	{
 		do
 		{
 			this.waitWhileSuspended();
@@ -123,11 +104,7 @@ public class SimulationController implements Runnable
 				for(int i = 0; i < myNumCashiers; i++)
 				{
 					this.displayCustomers(i);
-				}
-				
-//After pause, for each queue create a vector, go through the queue, get the icon for 0, for 1, fgor 2, until the size of the vector, send a vector of icons
-//to the view and it sets the icon for all of the images. do this all at once instead of getting customer icons one by one.
-				
+				}				
 			}
 			catch(InterruptedException e)
 			{
@@ -142,7 +119,6 @@ public class SimulationController implements Runnable
 		{
 			myServiceQueueManager.getCashier(i).setContinue(false);
 		}
-//		}
 	}
 	
 	private void waitWhileSuspended() throws InterruptedException
@@ -162,26 +138,13 @@ public class SimulationController implements Runnable
 		
 		myView.setNumServedText(myServiceQueueManager.totalServedSoFar(queue), queue);		
 		
-		
-//Have to stop idle time once program is done, also nothing in customer stats works
-		
-//		if(myServiceQueueManager.totalServedSoFar() != myView.getNumCustomers())
-//		{
-	//	System.out.println(myServiceQueueManager.timePassed() - myPostPause);
 		String text = "Total Served: " + myServiceQueueManager.totalServedSoFar() + "\n";
 		text += "Total Time Passed: " + determineTime() + "\n";
-//		text += "Total Customer Service Time: " + myServiceQueueManager.totalServiceTime() + "\n";
-//		text += "Avg Customer Service Time: " + myServiceQueueManager.averageServiceTime() + "\n";
-//		text += "Total Customer Wait Time: " + myServiceQueueManager.totalWaitTime() + "\n";
-//		text += "Avg Customer Wait Time: " + myServiceQueueManager.averageWaitTime() + "\n";
 		text += "Total Service Time: " + "\n" + myServiceQueueManager.totalCustomerServiceTime() + " ms" +  "\n";
 		text += "Avg Service Time: " + "\n" + myServiceQueueManager.averageCustomerServiceTime() + " ms" + "\n";
 		text += "Total Wait Time: " + "\n" + myServiceQueueManager.totalCustomerWaitTime() + " ms" + "\n";
 		text += "Avg Wait Time: " + "\n" + myServiceQueueManager.averageCustomerWaitTime() + " ms" + "\n";
-//		text += "Total Idle Time: " + myServiceQueueManager.totalIdleTime() + "\n";
-//		text += "Avg Idle Time: " + myServiceQueueManager.averageIdleTime() + "\n";
 		myView.setOverallStatsText(text);
-//		}
 	}
 	
 	public void startPause()
@@ -204,8 +167,6 @@ public class SimulationController implements Runnable
 			myView.changeStartPause();
 			myView.changeCashiers(myView.getComboBoxNumber() - 1);
 			myStarted = true;
-//			myView.disable(); (disables text input fields so the simulation can't be broken)		
-//			Once simulation is done, myView.enable();
 		}
 	}
 	
@@ -231,17 +192,14 @@ public class SimulationController implements Runnable
 		{
 			myView.setCashierStatsText("This cashier is inactive.");
 		}
-//		else if(myNumCustomers > myServiceQueueManager.totalServedSoFar())
-//		{
-		//add milliseconds to String
-			String text = "Name: " + myServiceQueueManager.getName(num) + "\n";
-			text += "Total Served: " + myServiceQueueManager.totalServedSoFar(num) + "\n";
-			text += "Total ServiceTime: " + "\n" + myServiceQueueManager.getServiceQueue(num).getTotalServiceTime() + " ms" + "\n";
-			text += "Avg Service Time: " + "\n" + myServiceQueueManager.getServiceQueue(num).averageServiceTime() + " ms" + "\n";
-			text += "Total Idle Time: " + "\n" + myServiceQueueManager.getServiceQueue(num).getTotalIdleTime() + " ms" + "\n";
-			text += "Avg Idle Time: " + "\n" + myServiceQueueManager.getServiceQueue(num).averageIdleTime() + " ms" + "\n";
-			myView.setCashierStatsText(text);
-//		}
+		
+		String text = "Name: " + myServiceQueueManager.getName(num) + "\n";
+		text += "Total Served: " + myServiceQueueManager.totalServedSoFar(num) + "\n";
+		text += "Total ServiceTime: " + "\n" + myServiceQueueManager.getServiceQueue(num).getTotalServiceTime() + " ms" + "\n";
+		text += "Avg Service Time: " + "\n" + myServiceQueueManager.getServiceQueue(num).averageServiceTime() + " ms" + "\n";
+		text += "Total Idle Time: " + "\n" + myServiceQueueManager.getServiceQueue(num).getTotalIdleTime() + " ms" + "\n";
+		text += "Avg Idle Time: " + "\n" + myServiceQueueManager.getServiceQueue(num).averageIdleTime() + " ms" + "\n";
+		myView.setCashierStatsText(text);
 	}
 	
 	public Dimension getCustomerSize()
