@@ -3,9 +3,12 @@ package queues;
 import java.awt.Dimension;
 
 /**
+ * CustomerGenerator class runs a thread that generates a customer
+ * and immediately enqueues it into the shortest queue.
  *  
  * @author Charles Mercenit
  */
+
 public abstract class CustomerGenerator implements Runnable
 {
 	private int myMaxTimeBetweenCustomers;
@@ -32,6 +35,14 @@ public abstract class CustomerGenerator implements Runnable
 		myThread = new Thread(this);
 	}
 	
+	/**
+	 * Generates a customer and enqueues it into
+	 * the shortest queue, determined by the
+	 * ServiceQueueManager class.
+	 * 
+	 * @return: enqueued customer
+	 */
+	
 	public Customer generateCustomer()
 	{
 		myCustomer = new Customer();
@@ -39,6 +50,10 @@ public abstract class CustomerGenerator implements Runnable
 		
 		return myCustomer;
 	}
+	
+	/**
+	 * Runs the thread.
+	 */
 	
 	public void run()
 	{
@@ -57,6 +72,10 @@ public abstract class CustomerGenerator implements Runnable
 		}
 	}
 	
+	/**
+	 * Starts the thread.
+	 */
+	
 	public void start()
 	{
 		try
@@ -71,16 +90,30 @@ public abstract class CustomerGenerator implements Runnable
 		}
 	}
 	
+	/**
+	 * Resumes the thread.
+	 */
+	
 	public synchronized void resume()
 	{
 		mySuspended = false;
 		this.notify();
 	}
 	
+	/**
+	 * Suspends the thread.
+	 */
+	
 	public void suspend()
 	{
 		mySuspended = true;
 	}
+	
+	/**
+	 * Waits while the thread is suspended.
+	 * 
+	 * @throws InterruptedException
+	 */
 	
 	private void waitWhileSuspended() throws InterruptedException
 	{
@@ -89,6 +122,14 @@ public abstract class CustomerGenerator implements Runnable
 			this.wait();
 		}
 	}
+	
+	/**
+	 * Generates a customer, then sleeps a random
+	 * number between 0 and the maximum generation
+	 * time specified by the user.
+	 * 
+	 * @throws InterruptedException
+	 */
 	
 	private void generateCustomers() throws InterruptedException
 	{
@@ -111,35 +152,84 @@ public abstract class CustomerGenerator implements Runnable
 		}
 	}
 	
+	/**
+	 * Returns the maximum number of customers
+	 * specified by the user.
+	 * 
+	 * @return: max num customers
+	 */
+	
 	public int getMaxNumCustomers()
 	{
 		return myMaxNumCustomers;
 	}
+	
+	/**
+	 * Returns the ServiceQueueManager.
+	 * 
+	 * @return: service queue manager
+	 */
 	
 	public ServiceQueueManager getServiceQueueManager()
 	{
 		return myServiceQueueManager;
 	}
 	
+	/**
+	 * Returns the maximum amount of time between
+	 * customer generation specified by the user.
+	 * 
+	 * @return: max time between customers
+	 */
+	
 	public int getMaxTimeBetweenCustomers()
 	{
 		return myMaxTimeBetweenCustomers;
 	}
+	
+	/**
+	 * Sets mySuspended to the passed in boolean; used
+	 * to suspend or resume the thread based on the
+	 * thread in SimulationController.
+	 * 
+	 * @param boolean to set mySuspended to
+	 */
 	
 	public void setSuspended(boolean b)
 	{
 		mySuspended = b;
 	}
 	
+	/**
+	 * Returns the most recently generated customer.
+	 * 
+	 * @return: customer
+	 */
+	
 	public Customer getCustomer()
 	{
 		return myCustomer;
 	}
 	
+	/**
+	 * Returns the size of the most recently generated customer.
+	 * 
+	 * @return: customer size
+	 */
+	
 	public Dimension getCustomerSize()
 	{
 		return myCustomer.getSize();
 	}
+	
+	/**
+	 * Changes max generation time based on the
+	 * number passed in. Used to speed up or
+	 * slow down the simulation according to
+	 * the slider.
+	 * 
+	 * @param num to divide generation time by
+	 */
 	
 	public void setGenerationTime(float num)
 	{

@@ -10,6 +10,7 @@ import queues.Customer;
 import queues.ServiceQueue;
 
 /**
+ * View of MVC, displays all images for the simulation.
  * 
  * @author Charles Mercenit
  */
@@ -27,6 +28,9 @@ public class SimulationView
 	
 	private final int MAX_PEOPLE_IN_LINE = 11;
 	private final int MAX_NUM_CASHIERS = 5;
+	private final int DEFAULT_CUSTOMER_GENERATION_TIME = 20;
+	private final int DEFAULT_NUM_CUSTOMERS = 500;
+	private final int DEFAULT_SERVICE_TIME = 600;
 	
 	private final Font myFont = new Font("Font", Font.BOLD, 15);
 	private final Font myParamFont = new Font("Param Font", Font.BOLD, 20);
@@ -38,44 +42,48 @@ public class SimulationView
 	private ButtonListener myStartPauseListener;
 	private ButtonListener[] myCashierStatsListeners;
 	private Container myContentPane;
-	private JPanel mySimulationPanel;
-	private JTextArea myStats1;
-	private JTextArea myStats2;
-	private JTextField  myHeading1,
-						myHeading2,
-						myHeading3,
-						myHeading4, 
-						myHeading5,
-						myHeading6,
-						myHeading7,
-						myGenerationTime,
-						myNumCustomers,
-						myServiceTime;
-	private JTextField[] myNumServed;
-	private JTextField[] myOverflow;
-	private JComboBox<Integer> myNumCashiers;
-	private JLabel[][] myCustomers = new JLabel[MAX_NUM_CASHIERS][MAX_PEOPLE_IN_LINE];
-	private JLabel[] myCashiers = new JLabel[MAX_NUM_CASHIERS];
+	private JPanel mySimulationPanel,
+				   myStatsPanel;
 	private JLabel myBackground;
-	private JSlider mySlider;	
-	private JPanel myStatsPanel;
+	private JLabel[] myCashiers = new JLabel[MAX_NUM_CASHIERS];
+	private JLabel[][] myCustomers = new JLabel[MAX_NUM_CASHIERS][MAX_PEOPLE_IN_LINE];
+	private JTextArea myStats1,
+					  myStats2;
+	private JTextField myHeading1,
+					   myHeading2,
+					   myHeading3,
+					   myHeading4, 
+					   myHeading5,
+					   myHeading6,
+					   myHeading7,
+					   myGenerationTime,
+					   myNumCustomers,
+					   myServiceTime;
+	private JComboBox<Integer> myNumCashiers;
+	private JTextField[] myNumServed,
+						 myOverflow;
+	private JSlider mySlider;
 	
 	public SimulationView(SimulationController controller)
 	{
 		myController = controller;
 		
+		//Creates the frame
 		myFrame.setSize(1000, 900);
 		myFrame.setLocation(500, 100);
 		myFrame.setLayout(null);
 		myFrame.setResizable(false);
 		
+		//Creates the content pane where everything is placed
 		myContentPane = myFrame.getContentPane();
 		myContentPane.setLayout(new BorderLayout());
 		
+		//Creates the panel that houses everything
 		mySimulationPanel = new JPanel();
 		mySimulationPanel.setBorder(BorderFactory.createEtchedBorder());
 		mySimulationPanel.setLayout(null);
 		
+		//Creates and displays cashier images, starting with closed cashier
 		for(int i = 0; i < MAX_NUM_CASHIERS; i++)
 		{
 			myCashiers[i] = new JLabel(SCALED_CASHIER_CLOSED);
@@ -85,6 +93,7 @@ public class SimulationView
 			mySimulationPanel.add(myCashiers[i]);
 		}
 		
+		//Creates the customers
 		for(int i = 0; i < MAX_NUM_CASHIERS; i++)
 		{
 			for(int j = 0; j < MAX_PEOPLE_IN_LINE; j++)
@@ -92,19 +101,22 @@ public class SimulationView
 				myCustomers[i][j] = new JLabel();
 			}
 		}
-				
+		
+		//Creates the panel where statistics are kept
 		myStatsPanel = new JPanel();
 		myStatsPanel.setLayout(null);
 		myStatsPanel.setSize(290, 1000);
 		myStatsPanel.setLocation(700, 0);
 		myStatsPanel.setBackground(new Color(225, 225, 225));
 		
+		//Creates the Start/Pause button
 		myStartPause = new JButton("Start");
 		myStartPause.setLayout(null);
 		myStartPause.setSize(150, 25);
 		myStartPause.setLocation(70, 835);
 		myStatsPanel.add(myStartPause);
 
+		//Creates statistics area 1
 		myStats1 = new JTextArea();
 		myStats1.setLayout(null);
 		myStats1.setSize(275, 275);
@@ -116,6 +128,7 @@ public class SimulationView
 		myStats1.setFont(new Font("Font 1", Font.BOLD, 19));
 		myStatsPanel.add(myStats1);
 		
+		//Creates statistics area 2
 		myStats2 = new JTextArea();
 		myStats2.setLayout(null);
 		myStats2.setSize(275, 275);
@@ -127,6 +140,7 @@ public class SimulationView
 		myStats2.setFont(new Font("Font 1", Font.BOLD, 19));
 		myStatsPanel.add(myStats2);
 		
+		//Creates the heading for statistics area 1
 		myHeading1 = new JTextField("Customer Stats: ");
 		myHeading1.setLayout(null);
 		myHeading1.setSize(115, 25);
@@ -137,6 +151,7 @@ public class SimulationView
 		myHeading1.setFont(myFont);
 		myStatsPanel.add(myHeading1);
 		
+		//Creates the heading for statistics area 2
 		myHeading2 = new JTextField("Cashier Stats: ");
 		myHeading2.setLayout(null);
 		myHeading2.setSize(150, 25);
@@ -147,6 +162,7 @@ public class SimulationView
 		myHeading2.setFont(myFont);
 		myStatsPanel.add(myHeading2);
 		
+		//Creates the heading for generation time
 		myHeading3 = new JTextField("Generation Time: ");
 		myHeading3.setLayout(null);
 		myHeading3.setSize(200, 25);
@@ -157,6 +173,7 @@ public class SimulationView
 		myHeading3.setFont(myParamFont);
 		myStatsPanel.add(myHeading3);
 		
+		//Creates the input field for generation time
 		myGenerationTime = new JTextField();
 		myGenerationTime.setLayout(null);
 		myGenerationTime.setSize(75, 25);
@@ -166,6 +183,7 @@ public class SimulationView
 		myGenerationTime.setLocation(210, 685);
 		myStatsPanel.add(myGenerationTime);
 		
+		//Creates the heading for number of customers
 		myHeading4 = new JTextField("# of Customers: ");
 		myHeading4.setLayout(null);
 		myHeading4.setSize(150, 25);
@@ -176,6 +194,7 @@ public class SimulationView
 		myHeading4.setFont(myParamFont);
 		myStatsPanel.add(myHeading4);
 		
+		//Creates the input field for number of customers
 		myNumCustomers = new JTextField();
 		myNumCustomers.setLayout(null);
 		myNumCustomers.setSize(75, 25);
@@ -185,6 +204,7 @@ public class SimulationView
 		myNumCustomers.setLocation(210, 720);
 		myStatsPanel.add(myNumCustomers);
 		
+		//Creates the heading for number of cashiers
 		myHeading5 = new JTextField("# of Cashiers: ");
 		myHeading5.setLayout(null);
 		myHeading5.setSize(150, 25);
@@ -194,7 +214,8 @@ public class SimulationView
 		myHeading5.setLocation(8, 755);
 		myHeading5.setFont(myParamFont);
 		myStatsPanel.add(myHeading5);
-			
+		
+		//Creates the drop down menu for number of cashiers
 		Integer[] ints = new Integer[5];
 		ints[0] = 1;
 		ints[1] = 2;
@@ -209,6 +230,7 @@ public class SimulationView
 		myNumCashiers.setLocation(210, 755);
 		myStatsPanel.add(myNumCashiers);		
 		
+		//Creates the heading for service time
 		myHeading6 = new JTextField("Service Time: ");
 		myHeading6.setLayout(null);
 		myHeading6.setSize(175, 25);
@@ -219,6 +241,7 @@ public class SimulationView
 		myHeading6.setFont(myParamFont);
 		myStatsPanel.add(myHeading6);
 		
+		//Creates the input field for service time
 		myServiceTime = new JTextField();
 		myServiceTime.setLayout(null);
 		myServiceTime.setSize(75, 25);
@@ -228,6 +251,18 @@ public class SimulationView
 		myServiceTime.setLocation(210, 790);
 		myStatsPanel.add(myServiceTime);
 		
+		//Creates the heading for the slider
+		myHeading7 = new JTextField("Speed:");
+		myHeading7.setLayout(null);
+		myHeading7.setSize(115, 25);
+		myHeading7.setBackground(new Color(225, 225, 225));
+		myHeading7.setBorder(BorderFactory.createEmptyBorder());
+		myHeading7.setEditable(false);
+		myHeading7.setLocation(8, 0);
+		myHeading7.setFont(myFont);
+		myStatsPanel.add(myHeading7);	
+		
+		//Creates the slider
 		mySlider = new JSlider(JSlider.HORIZONTAL, 0, 200, 100);
 		mySlider.setSize(290, 45);
 		Hashtable<Integer, JLabel> sliderTable = new Hashtable<Integer, JLabel>();
@@ -246,19 +281,9 @@ public class SimulationView
 		mySlider.setLocation(0, 25);
 		mySlider.setPaintTicks(true);
 		mySlider.setPaintLabels(true);
-		myStatsPanel.add(mySlider);
+		myStatsPanel.add(mySlider);	
 		
-		myHeading7 = new JTextField("Speed:");
-		myHeading7.setLayout(null);
-		myHeading7.setSize(115, 25);
-		myHeading7.setBackground(new Color(225, 225, 225));
-		myHeading7.setBorder(BorderFactory.createEmptyBorder());
-		myHeading7.setEditable(false);
-		myHeading7.setLocation(8, 0);
-		myHeading7.setFont(myFont);
-		myStatsPanel.add(myHeading7);		
-		
-		
+		//Creates the text box under each cashier that tracks the number of customers served
 		myNumServed = new JTextField[MAX_NUM_CASHIERS];
 		for(int i = 0; i < MAX_NUM_CASHIERS; i++)
 		{
@@ -273,6 +298,7 @@ public class SimulationView
 			mySimulationPanel.add(myNumServed[i]);
 		}
 		
+		//Creates the text box at the top of each line that shows customer overflow
 		myOverflow = new JTextField[MAX_NUM_CASHIERS];
 		for(int i = 0; i < MAX_NUM_CASHIERS; i++)
 		{
@@ -287,19 +313,30 @@ public class SimulationView
 			mySimulationPanel.add(myOverflow[i]);
 		}
 		
+		//Adds everything to the content pane
 		mySimulationPanel.add(myStatsPanel);		
 		myContentPane.add(mySimulationPanel, BorderLayout.CENTER);		
 		
+		//Associates button listeners
 		this.associateListeners(myController);
 		
+		//Creates the background
 		myBackground = new JLabel(new ImageIcon(myBackgroundImage));
 		myBackground.setSize(700, 1000);
 		myBackground.setLocation(0, 0);
 		mySimulationPanel.add(myBackground);
 		
+		//Displays the frame
 		myFrame.setVisible(true);
 		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
+	
+	/**
+	 * Associates the Start/Pause button and each cashier
+	 * with the appropriate method in SimulationController.
+	 * 
+	 * @param controller that includes the methods
+	 */
 	
 	private void associateListeners(SimulationController controller)
 	{
@@ -357,15 +394,31 @@ public class SimulationView
 		}		
 	}
 	
-	public void setOverallStatsText(String text)
+	/**
+	 * Changes the customer statistics panel text.
+	 * 
+	 * @param text to change to
+	 */
+	
+	public void setCustomerStatsText(String text)
 	{
 		myStats1.setText(text);
 	}
+	
+	/**
+	 * Changes the cashier statistics panel text.
+	 * 
+	 * @param text to change to
+	 */
 	
 	public void setCashierStatsText(String text)
 	{
 		myStats2.setText(text);
 	}
+	
+	/**
+	 * Changes Start button to Pause button and vice versa.
+	 */
 	
 	public void changeStartPause()
 	{
@@ -378,6 +431,14 @@ public class SimulationView
 			myStartPause.setText("Start");
 		}
 	}
+	
+	/**
+	 * Changes Cashier images from closed to open based
+	 * on the number of cashiers that are specified by
+	 * the user.
+	 * 
+	 * @param num of cashiers to change
+	 */
 	
 	public void changeCashiers(int num)
 	{		
@@ -405,38 +466,142 @@ public class SimulationView
 		}
 	}
 	
+	/**
+	 * Returns the number of cashiers specified by
+	 * the user.
+	 * 
+	 * @return: num of cashiers
+	 */
+	
 	public int getComboBoxNumber()
 	{
 		return myNumCashiers.getSelectedIndex() + 1;
 	}
 	
+	/**
+	 * Returns the maximum generation time specified
+	 * by the user. If input is less than 0 or not a number,
+	 * returns default generation time (20).
+	 * 
+	 * @return: generation time
+	 */
+	
 	public int getGenerationTime()
 	{
-		String text = myGenerationTime.getText();		
-		return Integer.parseInt(text);
+		try
+		{
+			String text = myGenerationTime.getText();	
+			if(Integer.parseInt(text) < 0)
+			{
+				return DEFAULT_CUSTOMER_GENERATION_TIME;
+			}
+			else
+			{
+				return Integer.parseInt(text);
+			}
+		}
+		catch(NumberFormatException e)
+		{
+			return DEFAULT_CUSTOMER_GENERATION_TIME;	
+		}
 	}
+	
+	/**
+	 * Returns the number of customers specified by the
+	 * user. If input is less than 0 or not a number, 
+	 * returns default number of customers (500).
+	 * 
+	 * @return: num customers
+	 */
 	
 	public int getNumCustomers()
 	{
-		String text = myNumCustomers.getText();
-		return Integer.parseInt(text);
+		try
+		{
+			String text = myNumCustomers.getText();
+			if(Integer.parseInt(text) < 0)
+			{
+				return DEFAULT_NUM_CUSTOMERS;
+			}
+			else
+			{
+				return Integer.parseInt(text);
+			}
+		}
+		catch(NumberFormatException e)
+		{
+			return DEFAULT_NUM_CUSTOMERS;
+		}
+		
 	}
+	
+	/**
+	 * Returns the maximum service time specified by
+	 * the user. If input is less than 0 or not a
+	 * number, returns default service time (600).
+	 * 
+	 * @return: service time
+	 */
 	
 	public int getServiceTime()
 	{
-		String text = myServiceTime.getText();
-		return Integer.parseInt(text);
+		try
+		{
+			String text = myServiceTime.getText();
+			if(Integer.parseInt(text) < 0)
+			{
+				return DEFAULT_SERVICE_TIME;
+			}
+			else
+			{
+				return Integer.parseInt(text);
+		
+			}
+		}
+		catch(NumberFormatException e)
+		{
+			return DEFAULT_SERVICE_TIME;
+		}
 	}
+	
+	/**
+	 * Changes the text in the specified customer
+	 * overflow text box to the passed in text.
+	 * 
+	 * @param text to change to
+	 * @param queue to change
+	 */
 	
 	public void setOverflowText(int text, int queue)
 	{
 		myOverflow[queue].setText("+" + text);
 	}
 	
+	/**
+	 * Changes the text in the specified cashier
+	 * text box to the passed in text.
+	 * 
+	 * @param text to change to
+	 * @param queue to change
+	 */
+	
 	public void setNumServedText(int text, int queue)
 	{
 		myNumServed[queue].setText("" + text);
 	}
+	
+	/**
+	 * Determines how many customers to display, goes through
+	 * the entire passed in ServiceQueue and displays each
+	 * customer, then sets the overflow text if there are
+	 * more customers in the queue than the max allowed in line.
+	 * If the customer at the front of the line is a mom,
+	 * change the image of the cashier.
+	 * 
+	 * @param queue that customers are in
+	 * @param num of customers in line
+	 * @param customers in line
+	 */
 	
 	public void setCustomersInLine(int queue, int num, ServiceQueue customers)
 	{
@@ -494,6 +659,14 @@ public class SimulationView
 		}
 	}
 	
+	/**
+	 * Sets the location of the customer based on
+	 * what queue they're in.
+	 * 
+	 * @param queue that customers are in
+	 * @param num in array of customers
+	 */
+	
 	public void setCustomerLocation(int queue, int num)
 	{
 		
@@ -517,10 +690,22 @@ public class SimulationView
 		}
 	}
 	
+	/**
+	 * Returns the cashier images.
+	 * 
+	 * @return: cashiers
+	 */
+	
 	public JLabel[] getCashiers()
 	{
 		return myCashiers;
 	}
+	
+	/**
+	 * Returns the value that the slider is at.
+	 * 
+	 * @return: slider value
+	 */
 	
 	public int getSliderValue()
 	{

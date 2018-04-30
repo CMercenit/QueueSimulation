@@ -2,17 +2,22 @@ package queues;
 
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.Toolkit;
-
 import javax.swing.ImageIcon;
 
 /**
+ * Customer class creates a customer with an entry time and
+ * a unique, random image (of the images provided). If the
+ * image is MANAGER_MOM, also adds a true boolean that shows
+ * that the customer is a mom.
  * 
  * @author Charles Mercenit
  */
+
 public class Customer
 {
+	private final int MY_NUM_IMAGES = 5;
+	
 	private final Image REGULAR_PERSON = Toolkit.getDefaultToolkit().getImage("images/RegularMan(Transparent).png");
 	private final ImageIcon SCALED_REGULAR_PERSON = new ImageIcon(REGULAR_PERSON.getScaledInstance(53, 105, Image.SCALE_SMOOTH));
 	private final Image BOW_TIE_PERSON = Toolkit.getDefaultToolkit().getImage("images/BowTie(Transparent).png");
@@ -23,14 +28,14 @@ public class Customer
 	private final ImageIcon SCALED_TOP_HAT_PERSON = new ImageIcon(TOP_HAT_PERSON.getScaledInstance(53, 118, Image.SCALE_SMOOTH));
 	private final Image MANAGER_MOM = Toolkit.getDefaultToolkit().getImage("images/ManagerMom(Transparent).png");
 	private final ImageIcon SCALED_MANAGER_MOM = new ImageIcon(MANAGER_MOM.getScaledInstance(60, 110, Image.SCALE_SMOOTH));
-	private ImageIcon[] images = new ImageIcon[5];
+	
+	private ImageIcon[] images = new ImageIcon[MY_NUM_IMAGES];
 	
 	private long myServiceTime;
 	private long myEntryTime;
 	private long myWaitTime;
 	private ImageIcon myImage;
 	private Dimension mySize;
-	private Point myLocation;
 	private boolean myIsMom;
 	
 	public Customer()
@@ -51,30 +56,71 @@ public class Customer
 		}
 	}
 	
+	/**
+	 * Returns the time a customer spent in line.
+	 * 
+	 * @return: wait time
+	 */
+	
 	public long getWaitTime()
 	{
 		return myWaitTime;
 	}
+	
+	/**
+	 * Returns the time the customer was generated
+	 * (entered the line).
+	 * 
+	 * @return: entry time
+	 */
 	
 	public long getEntryTime()
 	{
 		return myEntryTime;
 	}
 	
+	/**
+	 * Returns the time a customer took to be
+	 * serviced, generated and set in the Cashier
+	 * class.
+	 * 
+	 * @return: service time
+	 */
+	
 	public long getServiceTime()
 	{
 		return myServiceTime;
 	}
+	
+	/**
+	 * Adds the passed in number to the wait time.
+	 * 
+	 * @param num to add
+	 */
 	
 	public void addToWaitTime(long num)
 	{
 		myWaitTime += num;
 	}
 	
+	/**
+	 * Adds the passed in number to the service time.
+	 * 
+	 * @param num to add
+	 */
+	
 	public void addToServiceTime(long num)
 	{
 		myServiceTime += num;
 	}
+	
+	/**
+	 * This toString overrides Java's, provides a string of
+	 * a customer's entry time, wait time, service time, and
+	 * if the customer is a mom or not.
+	 * 
+	 * @return: String that details the customer
+	 */
 	
 	public String toString()
 	{
@@ -82,11 +128,19 @@ public class Customer
 		customer += "Entry Time: " + myEntryTime + "\n";
 		customer += "Wait Time: " + myWaitTime + "\n";
 		customer += "Service Time: " + myServiceTime + "\n";
-		customer += "Image: " + myImage.getIconHeight() + "\n";
 		customer += "Is Mom: " + getIsMom();
 		
 		return customer;
 	}
+	
+	/**
+	 * Sets the image for the customer. Rare chance for
+	 * the customer to be mom, has a 1 in 15 chance and
+	 * then a 1 in 5 chance. Also sets the size of the
+	 * image so the View can display it properly.
+	 * 
+	 * @return: customer ImageIcon
+	 */
 	
 	public ImageIcon setCustomerImage()
 	{
@@ -113,36 +167,65 @@ public class Customer
 		}		
 	}
 	
+	/**
+	 * Returns the size of the customer.
+	 * 
+	 * @return: size
+	 */
+	
 	public Dimension getSize()
 	{
 		return mySize;
 	}
 	
+	/**
+	 * Sets the size of the customer based on
+	 * the passed in image.
+	 * 
+	 * @param image to set the size of
+	 */
+	
 	public void setSize(ImageIcon image)
 	{
 		if(image.equals(SCALED_PONY_TAIL_PERSON))
 		{
-			mySize = new Dimension(75, 100);
+			mySize = new Dimension(62, 110);
 		}
-		else if(image.equals(SCALED_BOW_TIE_PERSON) || image.equals(SCALED_REGULAR_PERSON))
+		else if(image.equals(SCALED_BOW_TIE_PERSON))
 		{
-			mySize = new Dimension(50, 100);
+			mySize = new Dimension(60, 115);
+		}
+		else if(image.equals(SCALED_REGULAR_PERSON))
+		{
+			mySize = new Dimension(53, 105);
+		}
+		else if(image.equals(SCALED_TOP_HAT_PERSON))
+		{
+			mySize = new Dimension(53, 118);
 		}
 		else
 		{
-			mySize = new Dimension(50, 125);
+			mySize = new Dimension(60, 110);
 		}
 	}
 	
-	public Point getLocation()
-	{
-		return myLocation;
-	}
+	/**
+	 * Returns the customer's image.
+	 * 
+	 * @return: customer image
+	 */
 	
 	public ImageIcon getIcon()
 	{
 		return myImage;
 	}
+	
+	/**
+	 * Returns boolean of whether or not
+	 * the customer is a mom.
+	 * 
+	 * @return: is the customer a mom
+	 */
 	
 	public boolean getIsMom()
 	{
