@@ -13,7 +13,7 @@ import queues.ServiceQueueManager;
  * individual threads for customer generation and
  * cashiers.
  * 
- * @author Charles
+ * @author Charles Mercenit
  */
 
 public class SimulationController implements Runnable
@@ -113,11 +113,7 @@ public class SimulationController implements Runnable
 			
 			try
 			{
-				if(myView.getSliderValue() == 0)
-				{
-					System.out.println("Waiting for Infinity...");
-				}
-				else if(myView.getSliderValue() != 1.0 && myView.getSliderValue() != 0)
+				if(myView.getSliderValue() != 1.0 && myView.getSliderValue() != 0)
 				{
 					myServiceQueueManager.setGenerationTime((float)(myView.getSliderValue() / 100.0));
 					myServiceQueueManager.setServiceTime((float)(myView.getSliderValue() / 100.0));

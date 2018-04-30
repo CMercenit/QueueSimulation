@@ -151,7 +151,7 @@ public class Customer
 		images[4] = SCALED_MANAGER_MOM;
 		
 		
-		if((int)(Math.random()*15) == 10)
+		if((int)(Math.random()*8) == 3)
 		{
 			int random = (int)(Math.random()*5);
 			setSize(images[random]);

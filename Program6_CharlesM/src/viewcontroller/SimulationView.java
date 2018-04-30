@@ -266,7 +266,7 @@ public class SimulationView
 		mySlider = new JSlider(JSlider.HORIZONTAL, 0, 200, 100);
 		mySlider.setSize(290, 45);
 		Hashtable<Integer, JLabel> sliderTable = new Hashtable<Integer, JLabel>();
-		sliderTable.put(new Integer(0), new JLabel("0"));
+		sliderTable.put(new Integer(0), new JLabel("0.01"));
 		sliderTable.put(new Integer(25), new JLabel("0.25"));
 		sliderTable.put(new Integer(50), new JLabel("0.5"));
 		sliderTable.put(new Integer(75), new JLabel("0.75"));
@@ -630,19 +630,30 @@ public class SimulationView
 
 		for(int i = 1; i < (position + 1); i++)
 		{
-			Customer customer = customers.get(customers.size() - i);
-			
-			if(customers.get(customers.size() - 1).getIsMom() && customers.size() > 0)
+			try
 			{
-				myCashiers[queue].setIcon(SCALED_CASHIER_MANAGER);
+				Customer customer = customers.get(customers.size() - i);
+			
+				if(customers.get(customers.size() - 1).getIsMom() && customers.size() > 0)
+				{
+					myCashiers[queue].setIcon(SCALED_CASHIER_MANAGER);
+				}
+				else
+				{
+					myCashiers[queue].setIcon(SCALED_CASHIER_OPEN);
+				}
+				myCustomers[queue][i].setIcon(customer.getIcon());
+				myCustomers[queue][i].setSize(customer.getSize());
 			}
-			else
+			catch(IndexOutOfBoundsException e)
 			{
-				myCashiers[queue].setIcon(SCALED_CASHIER_OPEN);
+				
+			}
+			catch(NullPointerException e)
+			{
+				
 			}
 			
-			myCustomers[queue][i].setIcon(customer.getIcon());
-			myCustomers[queue][i].setSize(customer.getSize());
 			setCustomerLocation(queue, i);
 			myCustomers[queue][i].setVisible(true);
 			myBackground.add(myCustomers[queue][i]);
