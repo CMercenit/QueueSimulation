@@ -1,12 +1,19 @@
-# csci142-spr18-program-06
+# Queue Simulation
+## csci142-spr18-program-06
 
 ## Features
 
 ### Pause/Un-Pause Simulation
-![1](https://i.imgur.com/oSP2ajj.gifv)
+Threads allow the simulation to be paused and then started again. Multiple threads run each function of the program.
+
+![](queueSim 1.gif)
 
 ### Cashier Data
-![2](https://i.imgur.com/cffCwop.gifv)
+Clicking on cashiers displays the data for that cashier during this simulation.
+
+![](queueSim 3.gif)
 
 ### Decrease/Increase Speed
-![3](https://i.imgur.com/jbM9KWn.gifv)
+A slider allows the user to control the speed of the simulation by dragging left for slower or right for faster.
+
+![](queueSim 2.gif)
