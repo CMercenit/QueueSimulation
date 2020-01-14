@@ -2,8 +2,9 @@ package queues;
 
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.Toolkit;
 import javax.swing.ImageIcon;
+
+import qsim.ResourceLoader;
 
 /**
  * Customer class creates a customer with an entry time and
@@ -18,16 +19,31 @@ public class Customer
 {
 	private final int MY_NUM_IMAGES = 5;
 	
-	private final Image REGULAR_PERSON = Toolkit.getDefaultToolkit().getImage("images/RegularMan(Transparent).png");
-	private final ImageIcon SCALED_REGULAR_PERSON = new ImageIcon(REGULAR_PERSON.getScaledInstance(53, 105, Image.SCALE_SMOOTH));
-	private final Image BOW_TIE_PERSON = Toolkit.getDefaultToolkit().getImage("images/BowTie(Transparent).png");
-	private final ImageIcon SCALED_BOW_TIE_PERSON = new ImageIcon(BOW_TIE_PERSON.getScaledInstance(60, 115, Image.SCALE_SMOOTH));
-	private final Image PONY_TAIL_PERSON = Toolkit.getDefaultToolkit().getImage("images/PonyTail(Transparent).png");
-	private final ImageIcon SCALED_PONY_TAIL_PERSON = new ImageIcon(PONY_TAIL_PERSON.getScaledInstance(62, 110, Image.SCALE_SMOOTH));
-	private final Image TOP_HAT_PERSON = Toolkit.getDefaultToolkit().getImage("images/TopHat(Transparent).png");
-	private final ImageIcon SCALED_TOP_HAT_PERSON = new ImageIcon(TOP_HAT_PERSON.getScaledInstance(53, 118, Image.SCALE_SMOOTH));
-	private final Image MANAGER_MOM = Toolkit.getDefaultToolkit().getImage("images/ManagerMom(Transparent).png");
-	private final ImageIcon SCALED_MANAGER_MOM = new ImageIcon(MANAGER_MOM.getScaledInstance(60, 110, Image.SCALE_SMOOTH));
+//	private final Image REGULAR_PERSON = Toolkit.getDefaultToolkit().getImage("images/RegularMan(Transparent).png");
+//	private final ImageIcon SCALED_REGULAR_PERSON = new ImageIcon(REGULAR_PERSON.getScaledInstance(53, 105, Image.SCALE_SMOOTH));
+//	private final Image BOW_TIE_PERSON = Toolkit.getDefaultToolkit().getImage("images/BowTie(Transparent).png");
+//	private final ImageIcon SCALED_BOW_TIE_PERSON = new ImageIcon(BOW_TIE_PERSON.getScaledInstance(60, 115, Image.SCALE_SMOOTH));
+//	private final Image PONY_TAIL_PERSON = Toolkit.getDefaultToolkit().getImage("images/PonyTail(Transparent).png");
+//	private final ImageIcon SCALED_PONY_TAIL_PERSON = new ImageIcon(PONY_TAIL_PERSON.getScaledInstance(62, 110, Image.SCALE_SMOOTH));
+//	private final Image TOP_HAT_PERSON = Toolkit.getDefaultToolkit().getImage("images/TopHat(Transparent).png");
+//	private final ImageIcon SCALED_TOP_HAT_PERSON = new ImageIcon(TOP_HAT_PERSON.getScaledInstance(53, 118, Image.SCALE_SMOOTH));
+//	private final Image MANAGER_MOM = Toolkit.getDefaultToolkit().getImage("images/ManagerMom(Transparent).png");
+//	private final ImageIcon SCALED_MANAGER_MOM = new ImageIcon(MANAGER_MOM.getScaledInstance(60, 110, Image.SCALE_SMOOTH));
+	private final ImageIcon SCALED_REGULAR_PERSON = new ImageIcon(ResourceLoader
+			.loadImage("RegularMan(Transparent).png")
+			.getScaledInstance(53, 105, Image.SCALE_SMOOTH));
+	private final ImageIcon SCALED_BOW_TIE_PERSON = new ImageIcon(ResourceLoader
+			.loadImage("BowTie(Transparent).png")
+			.getScaledInstance(60, 115, Image.SCALE_SMOOTH));
+	private final ImageIcon SCALED_PONY_TAIL_PERSON = new ImageIcon(ResourceLoader
+			.loadImage("PonyTail(Transparent).png")
+			.getScaledInstance(62, 110, Image.SCALE_SMOOTH));
+	private final ImageIcon SCALED_TOP_HAT_PERSON = new ImageIcon(ResourceLoader
+			.loadImage("TopHat(Transparent).png")
+			.getScaledInstance(53, 118, Image.SCALE_SMOOTH));
+	private final ImageIcon SCALED_MANAGER_MOM = new ImageIcon(ResourceLoader
+			.loadImage("ManagerMom(Transparent).png")
+			.getScaledInstance(60, 110, Image.SCALE_SMOOTH));
 	
 	private ImageIcon[] images = new ImageIcon[MY_NUM_IMAGES];
 	

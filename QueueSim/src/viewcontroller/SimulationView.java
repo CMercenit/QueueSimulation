@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.Hashtable;
 import javax.swing.*;
 
+import qsim.ResourceLoader;
 import queues.ButtonListener;
 import queues.Customer;
 import queues.ServiceQueue;
@@ -17,14 +18,16 @@ import queues.ServiceQueue;
 
 public class SimulationView
 {
-	private final String myBackgroundImage = "images/background.jpg";
-	
-	private final Image CASHIER_CLOSED = Toolkit.getDefaultToolkit().getImage("images/EmptyDesk(Transparent).png");
-	private final ImageIcon SCALED_CASHIER_CLOSED = new ImageIcon(CASHIER_CLOSED.getScaledInstance(124, 60, Image.SCALE_SMOOTH));
-	private final Image CASHIER_OPEN = Toolkit.getDefaultToolkit().getImage("images/Cashier(Transparent).png");
-	private final ImageIcon SCALED_CASHIER_OPEN = new ImageIcon(CASHIER_OPEN.getScaledInstance(127, 123, Image.SCALE_SMOOTH));
-	private final Image CASHIER_MANAGER = Toolkit.getDefaultToolkit().getImage("images/CashierManager(Transparent).png");
-	private final ImageIcon SCALED_CASHIER_MANAGER = new ImageIcon(CASHIER_MANAGER.getScaledInstance(125, 125, Image.SCALE_SMOOTH));
+	private final String myBackgroundImage = "background.jpg";
+	private final ImageIcon SCALED_CASHIER_CLOSED = new ImageIcon(ResourceLoader
+			.loadImage("EmptyDesk(Transparent).png")
+			.getScaledInstance(124, 60, Image.SCALE_SMOOTH));
+	private final ImageIcon SCALED_CASHIER_OPEN = new ImageIcon(ResourceLoader
+			.loadImage("Cashier(Transparent).png")
+			.getScaledInstance(127, 123, Image.SCALE_SMOOTH));
+	private final ImageIcon SCALED_CASHIER_MANAGER = new ImageIcon(ResourceLoader
+			.loadImage("CashierManager(Transparent).png")
+			.getScaledInstance(125, 125, Image.SCALE_SMOOTH));
 	
 	private final int MAX_PEOPLE_IN_LINE = 11;
 	private final int MAX_NUM_CASHIERS = 5;
@@ -321,7 +324,7 @@ public class SimulationView
 		this.associateListeners(myController);
 		
 		//Creates the background
-		myBackground = new JLabel(new ImageIcon(myBackgroundImage));
+		myBackground = new JLabel(new ImageIcon(ResourceLoader.loadImage(myBackgroundImage)));
 		myBackground.setSize(700, 1000);
 		myBackground.setLocation(0, 0);
 		mySimulationPanel.add(myBackground);
